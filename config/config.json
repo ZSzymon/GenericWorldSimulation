@@ -1,0 +1,21 @@
+{
+  "testConfig": {
+    "populationSize":10,
+    "selectionMethod": "ruletka",
+    "crossingFunctionName": "onepoint",
+    "genesMinVal":10,
+    "genesMaxVal":99,
+    "genesInChromosome":10
+  },
+  "defaultConfig": {
+    "populationSize":100,
+    "selectionMethod": "ruletka",
+    "crossingFunctionName": "onepoint",
+    "genesMinVal":10,
+    "genesMaxVal":99,
+    "genesInChromosome":50
+  },
+  "selectionMethods": ["rouletteWheel", "ranking", "tournament"],
+  "crossBendingFunction": ["onePoint", "twoPoint"]
+
+}
