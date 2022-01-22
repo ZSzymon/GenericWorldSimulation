@@ -1,0 +1,40 @@
+TrybA: Program powinien wygenerować dowolnej wielkości populację wybraną przez użytkownika, a
+następnie wykonać elementarny algorytm genetyczny z wyborem metody selekcji (koła ruletki,
+rankingowej, turniejowej). Algorytm powinien mieć możliwość wyboru krzyżowania (jednopunktowe,
+dwupunktowe – z ograniczeniem zakresu[1]). Populacja składa się z genów zapisanych jako liczby
+naturalne z przedziału 10-99 i każdy osobnik ma jeden chromosom a w nim 50 genów. Ocena polega
+na wybraniu takich osobników dla których parzyste miejsca w chromosomie mają największą wartość,
+a nieparzyste najmniejszą. Wynikiem działania powinien być najlepszy osobnik spełniający dane
+założenie
+
+
+Classes:
+
+Wynikiem oceny jest osobnik najlepiej spełniające dane założenia
+Algorytm Oceny:
+    Parzyste miejsca największa wartość
+    Nieparzyste miejsca najmniejsza wartość
+#WHEN
+OSOBNIK:
+    chromosom
+
+Populacja
+    osobnicy
+
+użytkownik config
+Selekcja:
+    - Koła ruletka
+    - rankingowa
+    - turniejowa
+Krzyżowanie:
+    - jednopunktowe
+    - wielopunktowe
+    - ograniczenie zakresu
+
+geny
+
+
+
+
+
+
