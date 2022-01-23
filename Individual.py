@@ -18,11 +18,13 @@ class Individual:
         Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
         self.genesInChromosome = config["genesInChromosome"]
         self.mutationChance = config["mutationChance"]
-        self.genesMinVal = config["genesMinVal"]
-        self.genesMaxVal = config["genesMaxVal"]
-        self.chromosome = []
+        self.genesMinVal = config["geneMinVal"]
+        self.genesMaxVal = config["geneMaxVal"]
+
+        self.chromosome = chromosome if chromosome else []
+
         if initChromosome:
-            self.initializeChromosome(config["genesInChromosome"], config["genesMinVal"], config["genesMaxVal"])
+            self.initializeChromosome(config.genesInChromosome, config.geneMinVal, config.geneMaxVal)
 
         if performEvaluation:
             self.evaluationScore = self.performEvaluation()
@@ -31,10 +33,12 @@ class Individual:
 
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
-        if chromosome is None and not initChromosome:
+
+        if chromosome is None and not initChromosome and performEvaluation:
             raise WrongInitializeConditions("You have to provide chromosome or accept to init chromosome")
 
     def initializeChromosome(self, genesInChromosome: int, geneMinVal: int, geneMaxVal: int):
+
         for i in range(genesInChromosome):
             randValue = random.randint(geneMinVal, geneMaxVal)
             self.chromosome.append(randValue)
@@ -44,7 +48,7 @@ class Individual:
             evaluationFunction = Settings.defaultEvaluationFunction
 
         self.evaluationScore = evaluationFunction(self)
-        return self.evaluationScore
+
 
     @staticmethod
     def mutationFunction(oldChromosome, geneMinVal, geneMaxVal) -> List:

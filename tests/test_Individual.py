@@ -2,6 +2,7 @@ from unittest import TestCase
 
 from Individual import Individual
 from exceptions import WrongInitializeConditions
+from settings import Settings
 
 
 class TestIndividual(TestCase):
@@ -13,15 +14,16 @@ class TestIndividual(TestCase):
         with self.assertRaises(WrongInitializeConditions):
             Individual(initChromosome=False, performEvaluation=True)
 
-
     def test_initialize_chromosome(self):
-        self.fail()
+        config = Settings.config
+        individual = Individual(initChromosome=False, performEvaluation=False)
+        individual.initializeChromosome(config.genesInChromosome, config.geneMinVal, config.geneMaxVal)
 
     def test_perform_evaluation(self):
-        self.fail()
+        individual = Individual(initChromosome=True, performEvaluation=True)
+        individual.performEvaluation()
 
     def test_mutation_function(self):
-        self.fail()
+        individual = Individual(initChromosome=True, performEvaluation=True)
+        individual.mutate(Individual.mutationFunction)
 
-    def test_mutate(self):
-        self.fail()

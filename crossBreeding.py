@@ -16,30 +16,44 @@ class CrossBreeding:
     def perform(self) -> Population:
         pass
 
+    @staticmethod
+    def getMotherAndFather(individuals, i):
+        populationLenght = len(individuals)
+        mother = individuals[i]
+        father = individuals[(i + 1) % populationLenght]
+        return mother, father
+
+
 
 class OnePointCrossing(CrossBreeding):
 
     def __init__(self, population: Population):
         self.oldPopulation = population
 
+
+
     def perform(self) -> Population:
         newPopulation = Population()
         populationLenght = len(self.oldPopulation.individuals)
 
         for i in range(populationLenght):
-            mother = self.oldPopulation.individuals[i]
-            father = self.oldPopulation.individuals[(i + 1) % populationLenght]
-            newIndividual = OnePointCrossing.crossParents(mother, father)
+
+            mother, father = OnePointCrossing.getMotherAndFather(self.oldPopulation.individuals, i)
+            crossingPoint = random.randint(1, len(mother.chromosome) - 2)
+            newIndividual = OnePointCrossing.crossParents(mother, father, crossingPoint)
             newPopulation.addIndividual(newIndividual)
         return newPopulation
 
     @staticmethod
-    def crossParents(mother: Individual, father: Individual) -> Individual:
-        crossingPoint = random.randint(1, len(mother.chromosome) - 2)
+    def crossParents(mother: Individual, father: Individual, crossingPoint) -> Individual:
+        crossingPoint = int(crossingPoint)
         motherChromosomePart = mother.chromosome[:crossingPoint]
         fatherChromosomePart = father.chromosome[crossingPoint:]
         newChromosome = motherChromosomePart + fatherChromosomePart
         newIndividual = Individual(initChromosome=False, chromosome=newChromosome)
         return newIndividual
+
+
 class TwoPointCrossing(CrossBreeding):
+
     pass

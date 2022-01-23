@@ -10,14 +10,27 @@ class Settings:
 
     #TODO:
     #   Implement config files for modes
+    DEBUG = True
     MODE_CHOICES = ["A", "B"]
     MODE = "A"
 
-    config = Config.configFromFile(os.path.join(CONFIG_DIR, "config.json"))
+    CONFIG_FILE_PATH: str = ""
 
-    DEBUG = True
+    if MODE == "A":
+        CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "config.json")
+
+    if MODE == "B":
+        CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "configB.json")
+
     if DEBUG:
-        config = Config.configFromFile(os.path.join(CONFIG_DIR, "config.json"), "testConfig")
+        config = Config.configFromFile(CONFIG_FILE_PATH, "testConfig")
+    else:
+        config = Config.configFromFile(CONFIG_FILE_PATH)
+
+
+
+
+
 
 
     # Default evaluation function for individual.

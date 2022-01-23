@@ -12,6 +12,7 @@ class Population:
             config = Settings.config
         self.config = config
         self.individuals = []
+        self.populationScore = 0
 
     def initializeIndividuals(self):
         individuals = []
@@ -26,3 +27,4 @@ class Population:
     def performPopulationEvaluation(self, evaluationFunction=None):
         for individual in self.individuals:
             individual.performEvaluation(evaluationFunction)
+            self.populationScore += individual.evaluationScore

@@ -7,8 +7,8 @@ class Config:
     populationSize: int
     selectionFunction: str
     crossingFunctionName: str
-    genesMinVal: int
-    genesMaxVal: int
+    geneMinVal: int
+    geneMaxVal: int
     genesInChromosome: int
     maxGeneration: int
     mutationChance: int
