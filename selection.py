@@ -1,9 +1,9 @@
 import random
+import settings
 from typing import List
 
 from Individual import Individual
 from population import Population
-from settings import config
 
 
 class SelectionFunction:
@@ -16,6 +16,9 @@ class SelectionFunction:
                                            "tournament": TournamentSelection}
 
         return _registered_selection_functions.get(name)
+
+    def perform(self) -> List[Individual]:
+        pass
 
 
 class RouletteWheelSelection(SelectionFunction):
@@ -58,14 +61,24 @@ class RouletteWheelSelection(SelectionFunction):
 
 
 class RankingSelection(SelectionFunction):
-    pass
+
+    def __init__(self, population: Population, individualEvaluationFunction=None):
+        self.population = population
+        self.individualEvaluationFunction = individualEvaluationFunction
+        self.percentageWinnersOfRankingSelection = settings.percentageWinnersOfRankingSelection
+
+    def perform(self):
+        population = self.population.performPopulationEvaluation(self.individualEvaluationFunction)
+        population = self.population
+        individuals = sorted(self.population.individuals, key=lambda individual: individual.evaluationScore)
+        return individuals
 
 
 class TournamentSelection(SelectionFunction):
     def __init__(self, population: Population, individualEvaluationFunction):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.tournamentSize = config["tournamentSize"]
+        self.tournamentSize = settings.config["tournamentSize"]
 
     def performOneTournament(self):
         individuals = self.population.individuals
@@ -94,5 +107,11 @@ class TournamentSelection(SelectionFunction):
         return winner
 
     def perform(self) -> List[Individual]:
+        selectionIndividuals: List[Individual] = []
+        populationSize = len(self.population.individuals)
 
-        pass
+        while len(selectionIndividuals) < populationSize:
+            tournamentWinner = self.performOneTournament()
+            selectionIndividuals.append(tournamentWinner)
+
+        return selectionIndividuals

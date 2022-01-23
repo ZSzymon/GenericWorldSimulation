@@ -1,11 +1,9 @@
-from typing import List
 
-from Individual import Individual
 
 class IndividualEvaluateFunctions:
 
     @staticmethod
-    def evenBestOddWorst(individual: Individual) -> int:
+    def evenBestOddWorst(individual) -> int:
         chromosome = individual.chromosome
         evaluationScore = 0
 
