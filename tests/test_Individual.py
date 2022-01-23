@@ -27,3 +27,7 @@ class TestIndividual(TestCase):
         individual = Individual(initChromosome=True, performEvaluation=True)
         individual.mutate(Individual.mutationFunction)
 
+    def test_10000_mutation_function(self):
+        for i in range(10000):
+            self.test_mutation_function()
+

@@ -1,6 +1,5 @@
 from settings import Settings
 from typing import List
-
 from Individual import Individual
 
 
@@ -12,7 +11,7 @@ class Population:
             config = Settings.config
         self.config = config
         self.individuals = []
-        self.populationScore = 0
+        self.populationScores = []
 
     def initializeIndividuals(self):
         individuals = []
@@ -25,6 +24,8 @@ class Population:
         self.individuals.append(individual)
 
     def performPopulationEvaluation(self, evaluationFunction=None):
+        populationScore = 0
         for individual in self.individuals:
             individual.performEvaluation(evaluationFunction)
-            self.populationScore += individual.evaluationScore
+            populationScore += individual.evaluationScore
+        self.populationScores.append(populationScore)
