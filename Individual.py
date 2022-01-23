@@ -1,4 +1,5 @@
-import settings
+from exceptions import WrongInitializeConditions
+from settings import Settings
 import random
 from typing import List, Optional
 
@@ -12,16 +13,16 @@ class Individual:
     genesMinVal: int
     genesMaxVal: int
 
-    def __init__(self, config=settings.config, initChromosome=True, performEvaluation=True,
+    def __init__(self, config=Settings.config, initChromosome=True, performEvaluation=True,
                  chromosome: Optional[list] = None):
         Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
         self.genesInChromosome = config["genesInChromosome"]
         self.mutationChance = config["mutationChance"]
         self.genesMinVal = config["genesMinVal"]
         self.genesMaxVal = config["genesMaxVal"]
-
+        self.chromosome = []
         if initChromosome:
-            self.initializeChromosome(config["genesInChromosome"], config["geneMinVal"], config["geneMaxVal"])
+            self.initializeChromosome(config["genesInChromosome"], config["genesMinVal"], config["genesMaxVal"])
 
         if performEvaluation:
             self.evaluationScore = self.performEvaluation()
@@ -31,7 +32,7 @@ class Individual:
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
         if chromosome is None and not initChromosome:
-            raise Exception("You have to provide chromosome or accept to init chromosome")
+            raise WrongInitializeConditions("You have to provide chromosome or accept to init chromosome")
 
     def initializeChromosome(self, genesInChromosome: int, geneMinVal: int, geneMaxVal: int):
         for i in range(genesInChromosome):
@@ -40,7 +41,7 @@ class Individual:
 
     def performEvaluation(self, evaluationFunction=None):
         if evaluationFunction is None:
-            evaluationFunction = settings.defaultEvaluationFunction
+            evaluationFunction = Settings.defaultEvaluationFunction
 
         self.evaluationScore = evaluationFunction(self)
         return self.evaluationScore
@@ -53,5 +54,5 @@ class Individual:
         return oldChromosome
 
     def mutate(self, mutationFunction):
-        newChromosome = mutationFunction(self.chromosome, self.geneMinVal, self.geneMaxVal)
+        newChromosome = mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
         self.chromosome = newChromosome

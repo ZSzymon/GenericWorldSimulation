@@ -1,6 +1,5 @@
-import settings
+from settings import Settings
 from typing import List
-
 
 from Individual import Individual
 
@@ -10,18 +9,20 @@ class Population:
 
     def __init__(self, config=None):
         if config is None:
-            config = settings.config
+            config = Settings.config
         self.config = config
+        self.individuals = []
 
     def initializeIndividuals(self):
         individuals = []
-        for i in range(self.config["populationSize"]):
-            individual = Individual(initChromosome=True, performEvaluation=True,)
+        for i in range(self.config.populationSize):
+            individual = Individual(initChromosome=True, performEvaluation=True, )
             individuals.append(individual)
-        pass
+        self.individuals = individuals
 
     def addIndividual(self, individual):
         self.individuals.append(individual)
+
     def performPopulationEvaluation(self, evaluationFunction=None):
         for individual in self.individuals:
             individual.performEvaluation(evaluationFunction)

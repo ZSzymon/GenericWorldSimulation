@@ -1,24 +1,25 @@
-import os
 import json
 from dataclasses import dataclass
-from settings import CONFIG_DIR
+
 
 @dataclass
 class Config:
     populationSize: int
-    selectionMethod: str
+    selectionFunction: str
     crossingFunctionName: str
     genesMinVal: int
     genesMaxVal: int
     genesInChromosome: int
+    maxGeneration: int
+    mutationChance: int
 
     @staticmethod
-    def configFromFile(configPath=None, configType: str = "defaultConfig"):
-        if configPath is None:
-            configPath = os.path.join(CONFIG_DIR, "config.json")
-        config = None
+    def configFromFile(configPath, configType: str = "defaultConfig"):
         with open(configPath, "r") as jsonFile:
             config = json.load(jsonFile)
             configObj = Config(**config[configType])
 
         return configObj
+
+    def __getitem__(self, item):
+        return getattr(self, item)

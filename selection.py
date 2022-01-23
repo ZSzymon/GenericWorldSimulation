@@ -68,9 +68,9 @@ class RankingSelection(SelectionFunction):
         self.percentageWinnersOfRankingSelection = settings.percentageWinnersOfRankingSelection
 
     def perform(self):
-        population = self.population.performPopulationEvaluation(self.individualEvaluationFunction)
-        population = self.population
-        individuals = sorted(self.population.individuals, key=lambda individual: individual.evaluationScore)
+        self.population.performPopulationEvaluation(self.individualEvaluationFunction)
+        individuals = self.population.individuals
+        individuals = sorted(individuals, key=lambda individual: individual.evaluationScore)
         return individuals
 
 
@@ -92,11 +92,11 @@ class TournamentSelection(SelectionFunction):
             tournament.append(row)
 
         def getBestIndividual(individualsList: List[Individual]) -> Individual:
-            max = individualsList[0]
+            bestIndividual = individualsList[0]
             for _individual in individualsList:
-                if _individual.evaluationScore > max.evaluationScore:
-                    max = _individual
-            return max
+                if _individual.evaluationScore > bestIndividual.evaluationScore:
+                    bestIndividual = _individual
+            return bestIndividual
 
         bestIndividuals: List[Individual] = []
         for row in tournament:

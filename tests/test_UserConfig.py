@@ -1,9 +1,9 @@
 from unittest import TestCase
 
-from userConfig import Config
-
+from settings import Settings
 
 class TestConfig(TestCase):
     def test_config_from_file(self):
-        config = Config.configFromFile()
+        config = Settings.config
+
         self.assertIsNotNone(config)

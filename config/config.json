@@ -6,7 +6,8 @@
     "genesMinVal":10,
     "genesMaxVal":99,
     "genesInChromosome":10,
-    "maxGeneration": 10
+    "maxGeneration": 10,
+    "mutationChance": 1
   },
   "defaultConfig": {
     "populationSize":100,
@@ -15,7 +16,8 @@
     "genesMinVal":10,
     "genesMaxVal":99,
     "genesInChromosome":50,
-    "maxGeneration": 20
+    "maxGeneration": 20,
+    "mutationChance": 1
   },
   "selectionFunction": ["rouletteWheel", "ranking", "tournament"],
   "crossBendingFunction": ["onePoint", "twoPoint"]
