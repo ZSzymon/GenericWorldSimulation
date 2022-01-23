@@ -33,17 +33,35 @@ class Individual:
 
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
+        """A method for checking that the given conditions are not mutually exclusive
+
+        :param initChromosome: Boolean representing is Chromosome is initialized on init.
+        :param performEvaluation: Boolean representing is evaluation is performed in init.
+        :param chromosome: List representing the chromosome
+        :return: None or raising Exception.
+        """
 
         if chromosome is None and not initChromosome and performEvaluation:
             raise WrongInitializeConditions("You have to provide chromosome or accept to init chromosome")
 
     def initializeChromosome(self, genesInChromosome: int, geneMinVal: int, geneMaxVal: int):
+        """A method for initializing chromosome.
+
+        :param genesInChromosome: Length of genes in one chromosome
+        :param geneMinVal:
+        :param geneMaxVal:
+        :return: None
+        """
 
         for i in range(genesInChromosome):
             randValue = random.randint(geneMinVal, geneMaxVal)
             self.chromosome.append(randValue)
 
     def performEvaluation(self, evaluationFunction=None):
+        """Method for performing evaluation
+
+        :param evaluationFunction: Function responsible for evaluation of individual
+        """
         if evaluationFunction is None:
             evaluationFunction = Settings.defaultEvaluationFunction
 
@@ -51,12 +69,24 @@ class Individual:
 
 
     @staticmethod
-    def mutationFunction(oldChromosome, geneMinVal, geneMaxVal) -> List:
-        randIndex = random.randint(0, len(oldChromosome) - 1)
+    def mutationFunction(chromosome, geneMinVal, geneMaxVal) -> List:
+        """ Method performing mutation on chromosome
+
+        :param chromosome:
+        :param geneMinVal:
+        :param geneMaxVal:
+        :return: Chromosome with mutation
+        """
+        randIndex = random.randint(0, len(chromosome) - 1)
         randValue = random.randint(geneMinVal, geneMaxVal)
-        oldChromosome[randIndex] = randValue
-        return oldChromosome
+        chromosome[randIndex] = randValue
+        return chromosome
 
     def mutate(self, mutationFunction):
+        """API function for calling mutation function.
+
+        :param mutationFunction:
+        :return:
+        """
         newChromosome = mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
         self.chromosome = newChromosome
