@@ -1,3 +1,5 @@
+import random
+
 from settings import Settings
 from typing import List
 from Individual import Individual
@@ -23,9 +25,22 @@ class Population:
     def addIndividual(self, individual):
         self.individuals.append(individual)
 
+    def getBestIndividual(self):
+        self.individuals = sorted(self.individuals, key=lambda individual: individual.evaluationScore)
+        return self.individuals[0]
+
     def performPopulationEvaluation(self, evaluationFunction=None):
+        if evaluationFunction is None:
+            evaluationFunction = Settings.defaultEvaluationFunction
+
         populationScore = 0
         for individual in self.individuals:
             individual.performEvaluation(evaluationFunction)
             populationScore += individual.evaluationScore
         self.populationScores.append(populationScore)
+
+
+    def performMutation(self):
+        for individual in self.individuals:
+            if Individual.willMutate(1):
+                individual.mutate(Individual.mutationFunction)

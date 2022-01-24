@@ -18,6 +18,7 @@ class Settings:
 
     if MODE == "A":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "config.json")
+        percentageWinnersOfRankingSelection = 50
 
     if MODE == "B":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "configB.json")

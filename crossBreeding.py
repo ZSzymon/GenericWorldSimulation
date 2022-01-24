@@ -8,30 +8,34 @@ from population import Population
 
 class CrossBreeding:
 
-    def __init__(self, oldPopulation):
-        self.oldPopulation = oldPopulation
+    def __init__(self, population: Population):
+
+        self.population = population
+        self.selectedIndividuals: List[Individual] = []
+        self.oldPopulationLength = len(population.individuals)
         self.__currentClass__ = CrossBreeding
 
     @staticmethod
     def getByName(name):
-        _registered_crossbreeding_functions = {"onePoint": OnePointCrossing,
-                                               "twoPoint": TwoPointCrossing}
+        _registered_crossbreeding_functions = {"onePoint".lower(): OnePointCrossing,
+                                               "twoPoint".lower(): TwoPointCrossing}
 
-        return _registered_crossbreeding_functions.get(name)
+        return _registered_crossbreeding_functions.get(name.lower())
 
-    def _perform(self, CurrentClass) -> Population:
-        newPopulation = Population()
-        populationLenght = len(self.oldPopulation.individuals)
+    def _perform(self, CurrentClass) -> List[Individual]:
+        individuals = self.population.individuals
+        newGeneration: List[Individual] = []
+        populationLength = self.oldPopulationLength
 
-        for i in range(0, populationLenght - 1, 2):
-            mother, father = CurrentClass.getMotherAndFather(self.oldPopulation.individuals, i)
+        for i in range(0, populationLength - 1, 2):
+            mother, father = CurrentClass.getMotherAndFather(individuals, i)
             firstIndividual, secondIndividual = CurrentClass.crossParents(mother, father)
-            newPopulation.addIndividual(firstIndividual)
-            newPopulation.addIndividual(secondIndividual)
-        return newPopulation
+            newGeneration.append(firstIndividual)
+            newGeneration.append(secondIndividual)
+        return newGeneration
 
     @abstractmethod
-    def perform(self) -> Population:
+    def perform(self) -> List[Individual]:
         """"""
 
     @staticmethod
@@ -41,10 +45,11 @@ class CrossBreeding:
 
     @staticmethod
     def getMotherAndFather(individuals, i) -> Tuple[Individual, Individual]:
-        populationLenght = len(individuals)
         # TODO % populationLenght
+        mother, father = None , None
         mother = individuals[i]
         father = individuals[(i + 1)]
+
         return mother, father
 
 
@@ -53,7 +58,7 @@ class OnePointCrossing(CrossBreeding):
     def __init__(self, population: Population):
         super().__init__(population)
 
-    def perform(self) -> Population:
+    def perform(self) -> List[Individual]:
         return super()._perform(OnePointCrossing)
 
     @staticmethod
@@ -76,7 +81,7 @@ class TwoPointCrossing(CrossBreeding):
     def __init__(self, population: Population):
         super().__init__(population)
 
-    def perform(self) -> Population:
+    def perform(self) -> List[Individual]:
         return super()._perform(TwoPointCrossing)
 
     @staticmethod

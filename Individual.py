@@ -90,3 +90,7 @@ class Individual:
         """
         newChromosome = mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
         self.chromosome = newChromosome
+
+    @staticmethod
+    def willMutate(chance):
+        return random.randint(0, 100) in range(0, chance)

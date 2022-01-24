@@ -1,7 +1,7 @@
 {
   "testConfig": {
-    "populationSize":10,
-    "selectionFunction": "ruletka",
+    "populationSize":1000,
+    "selectionFunction": "rouletteWheel",
     "crossingFunctionName": "onepoint",
     "geneMinVal":10,
     "geneMaxVal":99,
@@ -11,7 +11,7 @@
   },
   "defaultConfig": {
     "populationSize":100,
-    "selectionFunction": "ruletka",
+    "selectionFunction": "rouletteWheel",
     "crossingFunctionName": "onepoint",
     "geneMinVal":10,
     "geneMaxVal":99,
