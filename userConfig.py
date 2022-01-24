@@ -15,6 +15,7 @@ class Config:
     tournamentSize: int
     percentageWinnersOfRankingSelection: int
     evaluationFunction: str
+    chromosomesInIndividual:int
 
     @staticmethod
     def configFromFile(configPath, configType: str = "defaultConfig"):
@@ -26,3 +27,4 @@ class Config:
 
     def __getitem__(self, item):
         return getattr(self, item)
+

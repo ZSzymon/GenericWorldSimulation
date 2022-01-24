@@ -5,24 +5,19 @@ from userConfig import Config
 class Settings:
     PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
     CONFIG_DIR = os.path.join(PROJECT_DIR, "config")
+    DEBUG = False
 
-
-    DEBUG = True
-    MODE_CHOICES = ["A", "B", "C"]
-    MODE = "A"
-
-    CONFIG_FILE_PATH: str = ""
-
-    if MODE == "A":
-        CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "config.json")
-
-    if MODE == "B":
-        CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "configB.json")
-
+    CONFIG_FILE_PATH_A = os.path.join(CONFIG_DIR, "configA.json")
+    CONFIG_FILE_PATH_B = os.path.join(CONFIG_DIR, "configB.json")
 
     if DEBUG:
-        config = Config.configFromFile(CONFIG_FILE_PATH, "testConfig")
+        configA = Config.configFromFile(CONFIG_FILE_PATH_A, "testConfig")
     else:
-        config = Config.configFromFile(CONFIG_FILE_PATH)
+        configA = Config.configFromFile(CONFIG_FILE_PATH_A)
+
+    if DEBUG:
+        configB = Config.configFromFile(CONFIG_FILE_PATH_B, "testConfig")
+    else:
+        configB = Config.configFromFile(CONFIG_FILE_PATH_B)
 
 

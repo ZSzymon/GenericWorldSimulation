@@ -1,20 +1,20 @@
 from unittest import TestCase
 
 from crossBreeding import OnePointCrossing, TwoPointCrossing
-from population import Population
+from population import PopulationA
 
 
 class TestOnePointCrossing(TestCase):
 
     def test_getMotherAndFather(self):
-        population = Population()
+        population = PopulationA()
         population.initializeIndividuals()
         crossBreeding: OnePointCrossing = OnePointCrossing(population)
         for i in range(0, len(crossBreeding.oldPopulation.individuals), 2):
             mother, father = OnePointCrossing.getMotherAndFather(crossBreeding.oldPopulation.individuals, i)
 
     def test_perform(self):
-        population = Population()
+        population = PopulationA()
         population.initializeIndividuals()
         crossBreeding = OnePointCrossing(population)
         newPopulation = crossBreeding.perform()
@@ -28,14 +28,14 @@ class TestOnePointCrossing(TestCase):
 class TestTwoPointCrossing(TestCase):
 
     def test_perform(self):
-        population = Population()
+        population = PopulationA()
         population.initializeIndividuals()
         crossBreeding = TwoPointCrossing(population)
         newPopulation = crossBreeding.perform()
         self.assertEqual(len(population.individuals), len(newPopulation.individuals))
 
     def test_getMotherAndFather(self):
-        population = Population()
+        population = PopulationA()
         population.initializeIndividuals()
         crossBreeding: TwoPointCrossing = TwoPointCrossing(population)
         for i in range(0, len(crossBreeding.oldPopulation.individuals), 2):

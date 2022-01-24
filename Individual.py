@@ -6,6 +6,10 @@ from typing import List, Optional, Tuple
 
 
 class Individual:
+    pass
+
+
+class IndividualA(Individual):
     evaluationScore: int
     relativeEvaluationScore: int
     chromosome: List[int]
@@ -16,8 +20,9 @@ class Individual:
 
     def __init__(self, initChromosome=True, performEvaluation=True,
                  chromosome: Optional[list] = None):
-        Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
-        config = Settings.config
+        IndividualA.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
+        config = Settings.configA
+        self.config = config
         self.genesInChromosome = config["genesInChromosome"]
         self.mutationChance = config["mutationChance"]
         self.genesMinVal = config["geneMinVal"]
@@ -65,7 +70,7 @@ class Individual:
         :param evaluationFunction: Function responsible for evaluation of individual
         """
         if evaluationFunction is None:
-            evaluationFunction = IndividualEvaluateFunctions.getByName(Settings.config.evaluationFunction)
+            evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
 
         self.evaluationScore = evaluationFunction(self)
 
@@ -97,18 +102,22 @@ class Individual:
         return random.randint(0, 100) in range(0, chance)
 
 
-class IndividualB:
-    evaluationScore: int
+class IndividualB(Individual):
     relativeEvaluationScore: int
     chromosomes: List[List[int]]
     genesInChromosome: int
     mutationChance: float
     genesMinVal: int
     genesMaxVal: int
+    chromosomesInIndividual: int
+    attractivityCoefficient : float
+    diseaseResistanceCoefficient: float
 
-    def __init__(self, config=Settings.config, initChromosome=True, performEvaluation=True,
+
+    def __init__(self, config=Settings.configB, initChromosome=True, performEvaluation=True,
                  chromosomes: Optional[Tuple[list, list]] = None):
-        Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosomes)
+        IndividualA.checkChoosenConditions(initChromosome, performEvaluation, chromosomes)
+        self.config = config
         self.genesInChromosome = config["genesInChromosome"]
         self.mutationChance = config["mutationChance"]
         self.genesMinVal = config["geneMinVal"]
@@ -122,9 +131,8 @@ class IndividualB:
 
         if performEvaluation:
             self.performEvaluation()
-
-        self.relativeEvaluationScore = None
-
+        self.diseaseResistanceCoefficient = 0
+        self.attractivityCoefficient = 0
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
         """A method for checking that the given conditions are not mutually exclusive
@@ -157,9 +165,9 @@ class IndividualB:
         :param evaluationFunction: Function responsible for evaluation of individual
         """
         if evaluationFunction is None:
-            evaluationFunction = Settings.defaultEvaluationFunction
+            evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
 
-        self.evaluationScore = evaluationFunction(self)
+        self.attractivityCoefficient, self.diseaseResistanceCoefficient = evaluationFunction(self)
 
     @staticmethod
     def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:
