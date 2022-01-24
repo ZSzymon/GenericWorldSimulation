@@ -6,37 +6,16 @@ from typing import List, Optional, Tuple
 
 
 class Individual:
-    pass
 
-
-class IndividualA(Individual):
-    evaluationScore: int
-    relativeEvaluationScore: int
-    chromosome: List[int]
-    genesInChromosome: int
-    mutationChance: float
-    genesMinVal: int
-    genesMaxVal: int
-
-    def __init__(self, initChromosome=True, performEvaluation=True,
+    def __init__(self, IndividualClass, initChromosome=True, performEvaluation=True,
                  chromosome: Optional[list] = None):
-        IndividualA.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
-        config = Settings.configA
-        self.config = config
-        self.genesInChromosome = config["genesInChromosome"]
-        self.mutationChance = config["mutationChance"]
-        self.genesMinVal = config["geneMinVal"]
-        self.genesMaxVal = config["geneMaxVal"]
-
-        self.chromosome = chromosome if chromosome else []
-
-        if initChromosome:
-            self.initializeChromosome(config.genesInChromosome, config.geneMinVal, config.geneMaxVal)
-
-        if performEvaluation:
-            self.performEvaluation()
-
-        self.relativeEvaluationScore = None
+        self.IndividualClass = IndividualClass
+        Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
+        self.config = IndividualClass.config
+        self.genesInChromosome = IndividualClass.config["genesInChromosome"]
+        self.mutationChance = IndividualClass.config["mutationChance"]
+        self.genesMinVal = IndividualClass.config["geneMinVal"]
+        self.genesMaxVal = IndividualClass.config["geneMaxVal"]
 
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
@@ -51,6 +30,55 @@ class IndividualA(Individual):
         if chromosome is None and not initChromosome and performEvaluation:
             raise WrongInitializeConditions("You have to provide chromosomes or accept to init chromosomes")
 
+    def performEvaluation(self, evaluationFunction=None):
+        """Method for performing evaluation
+
+        :param evaluationFunction: Function responsible for evaluation of individual
+        """
+        if evaluationFunction is None:
+            evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
+        self.evaluationScore = evaluationFunction(self)
+
+    @staticmethod
+    def mutationFunction(chromosome, geneMinVal, geneMaxVal) -> List:
+        pass
+
+    def mutate(self, mutationFunction):
+        """API function for calling mutation function.
+
+        :param mutationFunction:
+        :return:
+        """
+        newChromosome = self.IndividualClass.mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
+        self.chromosome = newChromosome
+
+    @staticmethod
+    def willMutate(chance):
+        return random.randint(0, 100) in range(0, chance)
+
+
+class IndividualA(Individual):
+    config = Settings.configA
+    evaluationScore: int
+    relativeEvaluationScore: int
+    chromosome: List[int]
+    genesInChromosome: int
+    mutationChance: float
+    genesMinVal: int
+    genesMaxVal: int
+
+    def __init__(self, IndividualClass, initChromosome=True, performEvaluation=True, chromosome: Optional[list] = None):
+
+        super().__init__(IndividualClass, initChromosome, performEvaluation, chromosome)
+        self.chromosome = chromosome if chromosome else []
+        if initChromosome:
+            self.initializeChromosome(self.config.genesInChromosome, self.config.geneMinVal, self.config.geneMaxVal)
+
+        if performEvaluation:
+            self.performEvaluation()
+
+        self.relativeEvaluationScore = None
+
     def initializeChromosome(self, genesInChromosome: int, geneMinVal: int, geneMaxVal: int):
         """A method for initializing chromosomes.
 
@@ -63,16 +91,6 @@ class IndividualA(Individual):
         for i in range(genesInChromosome):
             randValue = random.randint(geneMinVal, geneMaxVal)
             self.chromosome.append(randValue)
-
-    def performEvaluation(self, evaluationFunction=None):
-        """Method for performing evaluation
-
-        :param evaluationFunction: Function responsible for evaluation of individual
-        """
-        if evaluationFunction is None:
-            evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
-
-        self.evaluationScore = evaluationFunction(self)
 
     @staticmethod
     def mutationFunction(chromosome, geneMinVal, geneMaxVal) -> List:
@@ -88,21 +106,9 @@ class IndividualA(Individual):
         chromosome[randIndex] = randValue
         return chromosome
 
-    def mutate(self, mutationFunction):
-        """API function for calling mutation function.
-
-        :param mutationFunction:
-        :return:
-        """
-        newChromosome = mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
-        self.chromosome = newChromosome
-
-    @staticmethod
-    def willMutate(chance):
-        return random.randint(0, 100) in range(0, chance)
-
 
 class IndividualB(Individual):
+    config = Settings.configB
     relativeEvaluationScore: int
     chromosomes: List[List[int]]
     genesInChromosome: int
@@ -110,29 +116,24 @@ class IndividualB(Individual):
     genesMinVal: int
     genesMaxVal: int
     chromosomesInIndividual: int
-    attractivityCoefficient : float
+    attractivityCoefficient: float
     diseaseResistanceCoefficient: float
 
-
-    def __init__(self, config=Settings.configB, initChromosome=True, performEvaluation=True,
+    def __init__(self, IndividualClass, config=Settings.configB, initChromosome=True, performEvaluation=True,
                  chromosomes: Optional[Tuple[list, list]] = None):
-        IndividualA.checkChoosenConditions(initChromosome, performEvaluation, chromosomes)
-        self.config = config
-        self.genesInChromosome = config["genesInChromosome"]
-        self.mutationChance = config["mutationChance"]
-        self.genesMinVal = config["geneMinVal"]
-        self.genesMaxVal = config["geneMaxVal"]
+        super().__init__(IndividualClass, initChromosome, performEvaluation)
         self.chromosomesInIndividual = config["chromosomesInIndividual"]
         self.chromosomes = chromosomes if chromosomes else list([] for _ in range(config["chromosomesInIndividual"]))
-
         if initChromosome:
             self.initializeChromosome(config.chromosomesInIndividual, config.genesInChromosome, config.geneMinVal,
                                       config.geneMaxVal)
 
-        if performEvaluation:
-            self.performEvaluation()
         self.diseaseResistanceCoefficient = 0
         self.attractivityCoefficient = 0
+        if performEvaluation:
+            self.performEvaluation()
+
+
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
         """A method for checking that the given conditions are not mutually exclusive
@@ -183,16 +184,3 @@ class IndividualB(Individual):
             randValue = random.randint(geneMinVal, geneMaxVal)
             chromosome[randIndex] = randValue
         return chromosomes
-
-    def mutate(self, mutationFunction):
-        """API function for calling mutation function.
-
-        :param mutationFunction:
-        :return:
-        """
-        newChromosome = mutationFunction(self.chromosomes, self.genesMinVal, self.genesMaxVal)
-        self.chromosomes = newChromosome
-
-    @staticmethod
-    def willMutate(chance):
-        return random.randint(0, 100) in range(0, chance)

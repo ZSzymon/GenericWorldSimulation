@@ -68,7 +68,7 @@ class OnePointCrossing(CrossBreedingA):
         crossingPoint = int(random.randint(1, len(mother.chromosome) - 2))
         firstChromosome = OnePointCrossing.createChromosome(mother, father, crossingPoint)
         secondChromosome = OnePointCrossing.createChromosome(father, mother, crossingPoint)
-        firstIndividual = IndividualA(initChromosome=False, chromosome=firstChromosome)
+        firstIndividual = IndividualA(initChromosome=False, chromosome=firstChromosome,)
         secondIndividual = IndividualA(initChromosome=False, chromosome=secondChromosome)
 
         return firstIndividual, secondIndividual
