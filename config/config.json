@@ -1,13 +1,15 @@
 {
   "testConfig": {
     "populationSize":1000,
-    "selectionFunction": "rouletteWheel",
+    "selectionFunction": "ranking",
     "crossingFunctionName": "onepoint",
     "geneMinVal":10,
     "geneMaxVal":99,
     "genesInChromosome":10,
     "maxGeneration": 10,
-    "mutationChance": 1
+    "mutationChance": 1,
+    "tournamentSize": 5,
+    "percentageWinnersOfRankingSelection": 1
   },
   "defaultConfig": {
     "populationSize":100,
@@ -17,7 +19,9 @@
     "geneMaxVal":99,
     "genesInChromosome":50,
     "maxGeneration": 20,
-    "mutationChance": 1
+    "mutationChance": 1,
+    "tournamentSize": 3,
+    "percentageWinnersOfRankingSelection": 50
   },
   "selectionFunction": ["rouletteWheel", "ranking", "tournament"],
   "crossBendingFunction": ["onePoint", "twoPoint"]

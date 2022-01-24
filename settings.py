@@ -1,8 +1,6 @@
 import os
 from evaluationFunction import IndividualEvaluateFunctions
-
 from userConfig import Config
-
 
 class Settings:
     PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
@@ -18,10 +16,11 @@ class Settings:
 
     if MODE == "A":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "config.json")
-        percentageWinnersOfRankingSelection = 50
+        percentageWinnersOfRankingSelection = 10
 
     if MODE == "B":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "configB.json")
+
 
     if DEBUG:
         config = Config.configFromFile(CONFIG_FILE_PATH, "testConfig")

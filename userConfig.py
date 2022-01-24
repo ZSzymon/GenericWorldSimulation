@@ -12,6 +12,8 @@ class Config:
     genesInChromosome: int
     maxGeneration: int
     mutationChance: int
+    tournamentSize: int
+    percentageWinnersOfRankingSelection: int
 
     @staticmethod
     def configFromFile(configPath, configType: str = "defaultConfig"):

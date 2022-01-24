@@ -9,7 +9,6 @@ from population import Population
 class CrossBreeding:
 
     def __init__(self, population: Population):
-
         self.population = population
         self.selectedIndividuals: List[Individual] = []
         self.oldPopulationLength = len(population.individuals)
@@ -45,10 +44,13 @@ class CrossBreeding:
 
     @staticmethod
     def getMotherAndFather(individuals, i) -> Tuple[Individual, Individual]:
-        # TODO % populationLenght
-        mother, father = None , None
-        mother = individuals[i]
-        father = individuals[(i + 1)]
+        # In selection function == ranking. N percentage of best individuals is selected to crossing.
+        # This method is calling oldPopulation times. Thats why i >= len(individuals).
+        # where individuals == selected N Percentage of best individuals.
+        # That's why i%individualSize is used.
+        individualsSize = len(individuals)
+        mother = individuals[i % individualsSize]
+        father = individuals[(i + 1) % individualsSize]
 
         return mother, father
 
@@ -87,7 +89,7 @@ class TwoPointCrossing(CrossBreeding):
     @staticmethod
     def crossParents(mother: Individual, father: Individual) -> Tuple[Individual, Individual]:
         crossingPointBegin = random.randint(0, int(len(mother.chromosome) / 2))
-        crossingPointEnd = random.randint(crossingPointBegin, int(len(mother.chromosome)))
+        crossingPointEnd = random.randint(crossingPointBegin, int(len(mother.chromosome))-2)
 
         firstChromosome = TwoPointCrossing.createChromosome(mother, father, crossingPointBegin, crossingPointEnd)
         secondChromosome = TwoPointCrossing.createChromosome(father, mother, crossingPointBegin, crossingPointEnd)

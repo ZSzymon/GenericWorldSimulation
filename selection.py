@@ -1,5 +1,5 @@
 import random
-import settings
+from settings import Settings
 from typing import List
 
 from Individual import Individual
@@ -45,15 +45,14 @@ class RouletteWheelSelectionClass(SelectionFunctionClass):
         maxRangeEnd = 0
         rangesValues = {}
         for individual in individuals:
-            # It looks awful. I know. Individual score behaves acording to normal distribution.
-            # Thats why they scores are similar.
-            # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost alweys given 0.
-            # thaths why making it 1000 biger before casting will give different numbers.
+            # It looks awful. I know. Individual score behaves according to normal distribution.
+            # That's why they scores are similar.
+            # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost always given 0.
+            # that's why making it 1000 bigger before casting will give different numbers.
             ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * 1000
             individual.relativeEvaluationScore = int(ratio)
 
-
-            rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore+1)
+            rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore + 1)
             rangesValues[rangeValue] = individual
             previousRangeBegin += individual.relativeEvaluationScore
             maxRangeEnd = previousRangeBegin
@@ -63,11 +62,9 @@ class RouletteWheelSelectionClass(SelectionFunctionClass):
         for i in range(len(individuals)):
             # Sub one to randScore raindint in order to find boundary example.
             # Range in python: range(0,100) == x in <0, 100)
-            randScore = random.randint(0, maxRangeEnd-1)
+            randScore = random.randint(0, maxRangeEnd - 1)
             individual = findIndividual(randScore, rangesValues)
             selectedIndividuals.append(individual)
-
-
 
         return selectedIndividuals
 
@@ -77,20 +74,22 @@ class RankingSelectionClass(SelectionFunctionClass):
     def __init__(self, population: Population, individualEvaluationFunction=None):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.percentageWinnersOfRankingSelection = settings.percentageWinnersOfRankingSelection
+        self.percentageWinnersOfRankingSelection = Settings.percentageWinnersOfRankingSelection
 
     def perform(self) -> List[Individual]:
         self.population.performPopulationEvaluation(self.individualEvaluationFunction)
         individuals = self.population.individuals
-        individuals = sorted(individuals, key=lambda individual: individual.evaluationScore)
-        return individuals
+        individuals = sorted(individuals, key=lambda individual: individual.evaluationScore, reverse=True)
+        selectedSize = int(len(individuals) * self.percentageWinnersOfRankingSelection / 100)
+        selectedIndividual = individuals[:selectedSize]
+        return selectedIndividual
 
 
 class TournamentSelectionClass(SelectionFunctionClass):
     def __init__(self, population: Population, individualEvaluationFunction):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.tournamentSize = settings.config["tournamentSize"]
+        self.tournamentSize = Settings.config["tournamentSize"]
 
     def performOneTournament(self):
         individuals = self.population.individuals

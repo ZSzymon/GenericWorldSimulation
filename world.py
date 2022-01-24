@@ -6,19 +6,20 @@ from selection import SelectionFunctionClass
 
 from settings import Settings
 
+
 class WorldA:
     config = Settings.config
     population = Population(config)
     population.initializeIndividuals()
     population.performPopulationEvaluation()
-    selectionObject: SelectionFunctionClass = SelectionFunctionClass.getByName(config["selectionFunction"])(population,
-                                                                                    IndividualEvaluateFunctions.evenBestOddWorst)
+    evaluationFunction = IndividualEvaluateFunctions.getByName("evenBestOddWorst")
+    selectionObject: SelectionFunctionClass = \
+        SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
     crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population)
-
     maxGeneration: int = config["maxGeneration"]
     currentGeneration: int = 0
 
-    while currentGeneration < 200:
+    while currentGeneration < maxGeneration:
         selectedIndividuals: [Individual] = selectionObject.perform()
         crossingFunctionObject.population.individuals = selectedIndividuals
         newIndividuals = crossingFunctionObject.perform()
@@ -29,9 +30,6 @@ class WorldA:
         if currentGeneration % 10:
             print(f"Best: {population.getBestIndividual().evaluationScore}")
 
+
 if __name__ == '__main__':
     world = WorldA()
-
-
-
-
