@@ -31,7 +31,7 @@ class Population:
 
     def performPopulationEvaluation(self, evaluationFunction=None):
         if evaluationFunction is None:
-            evaluationFunction = Settings.defaultEvaluationFunction
+            evaluationFunction = Settings.config.evaluationFunction
 
         populationScore = 0
         for individual in self.individuals:

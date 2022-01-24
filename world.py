@@ -8,11 +8,13 @@ from settings import Settings
 
 
 class WorldA:
+
     config = Settings.config
+
     population = Population(config)
     population.initializeIndividuals()
-    population.performPopulationEvaluation()
     evaluationFunction = IndividualEvaluateFunctions.getByName("evenBestOddWorst")
+    population.performPopulationEvaluation(evaluationFunction)
     selectionObject: SelectionFunctionClass = \
         SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
     crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population)

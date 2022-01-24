@@ -74,7 +74,7 @@ class RankingSelectionClass(SelectionFunctionClass):
     def __init__(self, population: Population, individualEvaluationFunction=None):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.percentageWinnersOfRankingSelection = Settings.percentageWinnersOfRankingSelection
+        self.percentageWinnersOfRankingSelection = Settings.config.percentageWinnersOfRankingSelection
 
     def perform(self) -> List[Individual]:
         self.population.performPopulationEvaluation(self.individualEvaluationFunction)

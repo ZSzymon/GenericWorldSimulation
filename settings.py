@@ -6,17 +6,15 @@ class Settings:
     PROJECT_DIR = os.path.dirname(os.path.realpath(__file__))
     CONFIG_DIR = os.path.join(PROJECT_DIR, "config")
 
-    #TODO:
-    #   Implement config files for modes
+
     DEBUG = True
-    MODE_CHOICES = ["A", "B"]
+    MODE_CHOICES = ["A", "B", "C"]
     MODE = "A"
 
     CONFIG_FILE_PATH: str = ""
 
     if MODE == "A":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "config.json")
-        percentageWinnersOfRankingSelection = 10
 
     if MODE == "B":
         CONFIG_FILE_PATH = os.path.join(CONFIG_DIR, "configB.json")
@@ -28,13 +26,3 @@ class Settings:
         config = Config.configFromFile(CONFIG_FILE_PATH)
 
 
-
-
-
-
-
-    # Default evaluation function for individual.
-    defaultEvaluationFunction = IndividualEvaluateFunctions.evenBestOddWorst
-
-    # Percentage of best individuals taken as winners in ranking selection.
-    percentageWinnersOfRankingSelection: int = 50

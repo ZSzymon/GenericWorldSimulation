@@ -14,12 +14,13 @@ class Config:
     mutationChance: int
     tournamentSize: int
     percentageWinnersOfRankingSelection: int
+    evaluationFunction: str
 
     @staticmethod
     def configFromFile(configPath, configType: str = "defaultConfig"):
         with open(configPath, "r") as jsonFile:
-            config = json.load(jsonFile)
-            configObj = Config(**config[configType])
+            configFile = json.load(jsonFile)
+            configObj = Config(**configFile[configType])
 
         return configObj
 
