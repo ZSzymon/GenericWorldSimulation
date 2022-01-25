@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from crossBreeding import OnePointCrossing, TwoPointCrossing
+from crossBreeding import OnePointCrossingA, TwoPointCrossingA
 from population import PopulationA
 
 
@@ -9,14 +9,14 @@ class TestOnePointCrossing(TestCase):
     def test_getMotherAndFather(self):
         population = PopulationA()
         population.initializeIndividuals()
-        crossBreeding: OnePointCrossing = OnePointCrossing(population)
+        crossBreeding: OnePointCrossingA = OnePointCrossingA(population)
         for i in range(0, len(crossBreeding.oldPopulation.individuals), 2):
-            mother, father = OnePointCrossing.getMotherAndFather(crossBreeding.oldPopulation.individuals, i)
+            mother, father = OnePointCrossingA.getMotherAndFather(crossBreeding.oldPopulation.individuals, i)
 
     def test_perform(self):
         population = PopulationA()
         population.initializeIndividuals()
-        crossBreeding = OnePointCrossing(population)
+        crossBreeding = OnePointCrossingA(population)
         newPopulation = crossBreeding.perform()
         self.assertEqual(len(population.individuals), len(newPopulation.individuals))
 
@@ -30,16 +30,16 @@ class TestTwoPointCrossing(TestCase):
     def test_perform(self):
         population = PopulationA()
         population.initializeIndividuals()
-        crossBreeding = TwoPointCrossing(population)
+        crossBreeding = TwoPointCrossingA(population)
         newPopulation = crossBreeding.perform()
         self.assertEqual(len(population.individuals), len(newPopulation.individuals))
 
     def test_getMotherAndFather(self):
         population = PopulationA()
         population.initializeIndividuals()
-        crossBreeding: TwoPointCrossing = TwoPointCrossing(population)
+        crossBreeding: TwoPointCrossingA = TwoPointCrossingA(population)
         for i in range(0, len(crossBreeding.oldPopulation.individuals), 2):
-            mother, father = TwoPointCrossing.getMotherAndFather(crossBreeding.oldPopulation.individuals, i)
+            mother, father = TwoPointCrossingA.getMotherAndFather(crossBreeding.oldPopulation.individuals, i)
 
     def test1000Times_test_perform(self):
         for i in range(1000):

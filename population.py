@@ -3,7 +3,7 @@ import random
 from evaluationFunction import IndividualEvaluateFunctions
 from settings import Settings
 from typing import List
-from Individual import IndividualA, IndividualB, Individual
+from Individual import IndividualA, Individual
 
 
 class Population:
@@ -18,7 +18,7 @@ class Population:
     def initializeIndividuals(self):
         individuals = []
         for i in range(self.config.populationSize):
-            individual = self.IndividualClass(initChromosome=True, performEvaluation=True)
+            individual = self.IndividualClass(initChromosomes=True, performEvaluation=True)
             individuals.append(individual)
         self.individuals = individuals
 
@@ -30,6 +30,8 @@ class Population:
             if Individual.willMutate(1):
                 individual.mutate(self.IndividualClass.mutationFunction)
 
+    def performPopulationEvaluation(self, evaluationFunction=None):
+        pass
 
 class PopulationA(Population):
 
@@ -58,16 +60,6 @@ class PopulationB(Population):
     def __init__(self, IndividualClass: Individual, config=Settings.configB):
         super().__init__(config, IndividualClass)
 
-    def initializeIndividuals(self):
-        individuals = []
-        for i in range(self.config.populationSize):
-            individual = self.IndividualClass(initChromosome=True, performEvaluation=True)
-            individuals.append(individual)
-        self.individuals = individuals
-
-    def addIndividual(self, individual):
-        self.individuals.append(individual)
-
     def getBestIndividual(self):
         self.individuals = sorted(self.individuals, key=lambda individual: individual.evaluationScore, reverse=True)
         return self.individuals[0]
@@ -81,8 +73,3 @@ class PopulationB(Population):
             attractivityCoefficient = individual.attractivityCoefficient
             diseaseResistanceCoefficient = individual.diseaseResistanceCoefficient
         self.populationScores.append((attractivityCoefficient, diseaseResistanceCoefficient))
-
-    def performMutation(self):
-        for individual in self.individuals:
-            if self.IndividualClass.willMutate(1):
-                individual.mutate(IndividualA.mutationFunction)

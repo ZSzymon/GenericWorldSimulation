@@ -1,8 +1,8 @@
 {
-  "testConfig": {
+  "testConfig":  {
     "populationSize":10,
     "selectionFunction": "rouletteWheel",
-    "crossingFunctionName": "onepoint",
+    "crossingFunctionName": "twoPoint",
     "geneMinVal":10,
     "geneMaxVal":99,
     "genesInChromosome":50,
@@ -16,7 +16,7 @@
   "defaultConfig": {
     "populationSize":100,
     "selectionFunction": "rouletteWheel",
-    "crossingFunctionName": "onepoint",
+    "crossingFunctionName": "twoPoint",
     "geneMinVal":10,
     "geneMaxVal":99,
     "genesInChromosome":50,

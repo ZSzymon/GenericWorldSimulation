@@ -39,9 +39,6 @@ class Individual:
             evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
         self.evaluationScore = evaluationFunction(self)
 
-    @staticmethod
-    def mutationFunction(chromosome, geneMinVal, geneMaxVal) -> List:
-        pass
 
     def mutate(self, mutationFunction):
         """API function for calling mutation function.
@@ -49,29 +46,47 @@ class Individual:
         :param mutationFunction:
         :return:
         """
-        newChromosome = self.IndividualClass.mutationFunction(self.chromosome, self.genesMinVal, self.genesMaxVal)
-        self.chromosome = newChromosome
+        newChromosome = self.IndividualClass.mutationFunction(self.chromosomes, self.genesMinVal, self.genesMaxVal)
+        self.chromosomes = newChromosome
 
     @staticmethod
     def willMutate(chance):
         return random.randint(0, 100) in range(0, chance)
+
+    @staticmethod
+    def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:
+        """ Method performing mutation on chromosomes
+
+        :param chromosomes:
+        :param geneMinVal:
+        :param geneMaxVal:
+        :return: Chromosome with mutation
+        """
+
+        if isinstance(chromosomes[0], int):
+            randIndex = random.randint(0, len(chromosomes) - 1)
+            randValue = random.randint(geneMinVal, geneMaxVal)
+            chromosomes[randIndex] = randValue
+            return chromosomes
+
+        for chromosome in chromosomes:
+            randIndex = random.randint(0, len(chromosome) - 1)
+            randValue = random.randint(geneMinVal, geneMaxVal)
+            chromosome[randIndex] = randValue
+        return chromosomes
 
 
 class IndividualA(Individual):
     config = Settings.configA
     evaluationScore: int
     relativeEvaluationScore: int
-    chromosome: List[int]
-    genesInChromosome: int
-    mutationChance: float
-    genesMinVal: int
-    genesMaxVal: int
+    chromosomes: List[int]
 
-    def __init__(self, initChromosome=True, performEvaluation=True, chromosome: Optional[list] = None):
+    def __init__(self, initChromosomes=True, performEvaluation=True, chromosomes: Optional[list] = None):
 
-        super().__init__(type(self), initChromosome, performEvaluation, chromosome)
-        self.chromosome = chromosome if chromosome else []
-        if initChromosome:
+        super().__init__(type(self), initChromosomes, performEvaluation, chromosomes)
+        self.chromosomes = chromosomes if chromosomes else []
+        if initChromosomes:
             self.initializeChromosome(self.config.genesInChromosome, self.config.geneMinVal, self.config.geneMaxVal)
 
         if performEvaluation:
@@ -90,22 +105,7 @@ class IndividualA(Individual):
 
         for i in range(genesInChromosome):
             randValue = random.randint(geneMinVal, geneMaxVal)
-            self.chromosome.append(randValue)
-
-    @staticmethod
-    def mutationFunction(chromosome, geneMinVal, geneMaxVal) -> List:
-        """ Method performing mutation on chromosomes
-
-        :param chromosome:
-        :param geneMinVal:
-        :param geneMaxVal:
-        :return: Chromosome with mutation
-        """
-        randIndex = random.randint(0, len(chromosome) - 1)
-        randValue = random.randint(geneMinVal, geneMaxVal)
-        chromosome[randIndex] = randValue
-        return chromosome
-
+            self.chromosomes.append(randValue)
 
 class IndividualB(Individual):
     config = Settings.configB
@@ -132,7 +132,6 @@ class IndividualB(Individual):
         self.attractivityCoefficient = 0
         if performEvaluation:
             self.performEvaluation()
-
 
     @staticmethod
     def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
@@ -170,17 +169,17 @@ class IndividualB(Individual):
 
         self.attractivityCoefficient, self.diseaseResistanceCoefficient = evaluationFunction(self)
 
-    @staticmethod
-    def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:
-        """ Method performing mutation on chromosomes
-
-        :param chromosomes:
-        :param geneMinVal:
-        :param geneMaxVal:
-        :return: Chromosome with mutation
-        """
-        for chromosome in chromosomes:
-            randIndex = random.randint(0, len(chromosome) - 1)
-            randValue = random.randint(geneMinVal, geneMaxVal)
-            chromosome[randIndex] = randValue
-        return chromosomes
+    # @staticmethod
+    # def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:
+    #     """ Method performing mutation on chromosomes
+    #
+    #     :param chromosomes:
+    #     :param geneMinVal:
+    #     :param geneMaxVal:
+    #     :return: Chromosome with mutation
+    #     """
+    #     for chromosome in chromosomes:
+    #         randIndex = random.randint(0, len(chromosome) - 1)
+    #         randValue = random.randint(geneMinVal, geneMaxVal)
+    #         chromosome[randIndex] = randValue
+    #     return chromosomes

@@ -9,7 +9,7 @@ class IndividualEvaluateFunctions:
 
     @staticmethod
     def evenBestOddWorst(individual) -> int:
-        chromosome = individual.chromosome
+        chromosome = individual.chromosomes
         evaluationScore = 0
 
         def isEven(index):

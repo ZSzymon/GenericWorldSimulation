@@ -2,18 +2,15 @@ import random
 from abc import abstractmethod
 from typing import Tuple, List
 
-from Individual import IndividualA, Individual
-from population import PopulationA
+from Individual import IndividualA, Individual, IndividualB
+from population import PopulationA, PopulationB, Population
 
 
-
-
-
-#TODO prapre for botch modes.
+# TODO prapre for botch modes.
 
 class CrossBreeding:
 
-    def __init__(self, population: PopulationA, IndividualClass):
+    def __init__(self, population: Population, IndividualClass):
         self.population = population
         self.selectedIndividuals: List[IndividualClass] = []
         self.oldPopulationLength = len(population.individuals)
@@ -22,31 +19,21 @@ class CrossBreeding:
 
     @staticmethod
     def getByName(name):
-        _registered_crossbreeding_functions = {"onePoint".lower(): OnePointCrossing,
-                                               "twoPoint".lower(): TwoPointCrossing}
+        _registered_crossbreeding_functions = {"onePoint".lower(): OnePointCrossingA,
+                                               "twoPoint".lower(): TwoPointCrossingA}
 
         return _registered_crossbreeding_functions.get(name.lower())
 
-    def _perform(self, CurrentClass) -> List[Individual]:
+    def perform(self) -> List[Individual]:
         individuals = self.population.individuals
         newGeneration: List[Individual] = []
         populationLength = self.oldPopulationLength
-
         for i in range(0, populationLength - 1, 2):
-            mother, father = CurrentClass.getMotherAndFather(individuals, i)
-            firstIndividual, secondIndividual = CurrentClass.crossParents(mother, father, self.__IndividualClass)
+            mother, father = self.getMotherAndFather(individuals, i)
+            firstIndividual, secondIndividual = self.crossParents(mother, father)
             newGeneration.append(firstIndividual)
             newGeneration.append(secondIndividual)
         return newGeneration
-
-    @abstractmethod
-    def perform(self) -> List[Individual]:
-        """"""
-
-    @staticmethod
-    @abstractmethod
-    def crossParents(first, second) -> Tuple[Individual, Individual]:
-        """Method to perform parentCrossing."""
 
     @staticmethod
     def getMotherAndFather(individuals, i) -> Tuple[Individual, Individual]:
@@ -63,25 +50,39 @@ class CrossBreeding:
 
 class OnePointCrossing(CrossBreeding):
 
-    def __init__(self, population: PopulationA, IndividualClass):
-        super().__init__(population, IndividualClass)
+    @classmethod
+    def crossParents(cls, mother, father) -> Tuple[Individual, Individual]:
+        crossingPoint = random.randint(0, mother.genesInChromosome // 2)
 
-    def perform(self) -> List[Individual]:
-        return super()._perform(OnePointCrossing)
-
-    @staticmethod
-    def crossParents(mother: IndividualA, father: IndividualA, IndividualClass) -> Tuple[Individual, Individual]:
-        crossingPoint = int(random.randint(1, len(mother.chromosome) - 2))
-        firstChromosome = OnePointCrossing.createChromosome(mother, father, crossingPoint)
-        secondChromosome = OnePointCrossing.createChromosome(father, mother, crossingPoint)
-        firstIndividual = IndividualClass(initChromosome=False, chromosome=firstChromosome)
-        secondIndividual = IndividualClass(initChromosome=False, chromosome=secondChromosome)
+        firstChromosome = cls.createChromosome(mother, father, crossingPoint)
+        secondChromosome = cls.createChromosome(father, mother, crossingPoint)
+        firstIndividual = type(mother)(initChromosomes=False, chromosomes=firstChromosome)
+        secondIndividual = type(mother)(initChromosomes=False, chromosomes=secondChromosome)
 
         return firstIndividual, secondIndividual
 
-    @staticmethod
-    def createChromosome(first: IndividualA, second: IndividualA, _crossingPoint) -> List[int]:
-        return first.chromosome[:_crossingPoint] + second.chromosome[_crossingPoint:]
+
+class OnePointCrossingA(OnePointCrossing):
+
+    def __init__(self, population: PopulationA, IndividualClass):
+        super().__init__(population, IndividualClass)
+
+    @classmethod
+    def createChromosome(cls, first: IndividualA, second: IndividualA, _crossingPoint) -> List[int]:
+        return first.chromosomes[:_crossingPoint] + second.chromosomes[_crossingPoint:]
+
+class OnePointCrossingB(OnePointCrossing):
+
+    def __init__(self, population: PopulationB, IndividualClass):
+        super().__init__(population, IndividualClass)
+
+    @classmethod
+    def createChromosome(cls, first: IndividualB, second: IndividualB, _crossingPoints: List[int]) -> List[List[int]]:
+        chromosomes = []
+        for i, crossPoint in _crossingPoints:
+            chromosome = first.chromosomes[i][:crossPoint] + second.chromosomes[i][:crossPoint]
+            chromosomes.append(chromosome)
+        return chromosomes
 
 
 class TwoPointCrossing(CrossBreeding):
@@ -89,26 +90,44 @@ class TwoPointCrossing(CrossBreeding):
     def __init__(self, population: PopulationA, IndividualClass):
         super().__init__(population, IndividualClass)
 
-    def perform(self) -> List[Individual]:
-        return super()._perform(TwoPointCrossing)
+    @classmethod
+    def crossParents(cls, mother, father) -> Tuple[Individual, Individual]:
+        crossingPointBegin = random.randint(0, mother.genesInChromosome // 2)
+        crossingPointEnd = random.randint(crossingPointBegin, int(len(mother.chromosomes)) - 2)
 
-    @staticmethod
-    def crossParents(mother: IndividualA, father: IndividualA) -> Tuple[IndividualA, IndividualA]:
-        crossingPointBegin = random.randint(0, int(len(mother.chromosome) / 2))
-        crossingPointEnd = random.randint(crossingPointBegin, int(len(mother.chromosome))-2)
-
-        firstChromosome = TwoPointCrossing.createChromosome(mother, father, crossingPointBegin, crossingPointEnd)
-        secondChromosome = TwoPointCrossing.createChromosome(father, mother, crossingPointBegin, crossingPointEnd)
-        firstIndividual = IndividualA(initChromosome=False, chromosome=firstChromosome)
-        secondIndividual = IndividualA(initChromosome=False, chromosome=secondChromosome)
+        firstChromosome = cls.createChromosome(mother, father, crossingPointBegin, crossingPointEnd)
+        secondChromosome = cls.createChromosome(father, mother, crossingPointBegin, crossingPointEnd)
+        firstIndividual = type(mother)(initChromosomes=False, chromosomes=firstChromosome)
+        secondIndividual = type(mother)(initChromosomes=False, chromosomes=secondChromosome)
 
         return firstIndividual, secondIndividual
+
+
+class TwoPointCrossingA(TwoPointCrossing):
+
+    def __init__(self, population: PopulationA, IndividualClass):
+        super().__init__(population, IndividualClass)
 
     @staticmethod
     def createChromosome(first: IndividualA, seconds: IndividualA,
                          crossingPointBegin, crossingPointEnd) -> List[int]:
-        return first.chromosome[:crossingPointBegin] + \
-               seconds.chromosome[crossingPointBegin:crossingPointEnd] + \
-               first.chromosome[crossingPointEnd:]
+        return first.chromosomes[:crossingPointBegin] + \
+               seconds.chromosomes[crossingPointBegin:crossingPointEnd] + \
+               first.chromosomes[crossingPointEnd:]
 
 
+class TwoPointCrossingB(CrossBreeding):
+
+    def __init__(self, population: PopulationB, IndividualClass):
+        super().__init__(population, IndividualClass)
+
+    @staticmethod
+    def createChromosome(first: Individual, seconds: Individual, _crossingPoints: List[Tuple[int, int]]) \
+            -> List[List[int]]:
+        chromosomes = []
+        for i, crossPoint in enumerate(_crossingPoints):
+            chromosome = first.chromosomes[i][:crossPoint[0]] + \
+                         seconds.chromosomes[i][crossPoint[0]:crossPoint[1]] + \
+                         first.chromosomes[i][crossPoint[1]:]
+            chromosomes.append(chromosome)
+        return chromosomes
