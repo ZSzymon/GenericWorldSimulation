@@ -119,12 +119,12 @@ class IndividualB(Individual):
     attractivityCoefficient: float
     diseaseResistanceCoefficient: float
 
-    def __init__(self, config=Settings.configB, initChromosome=True, performEvaluation=True,
+    def __init__(self, config=Settings.configB, initChromosomes=True, performEvaluation=True,
                  chromosomes: Optional[Tuple[list, list]] = None):
-        super().__init__(type(self), initChromosome, performEvaluation)
+        super().__init__(type(self), initChromosomes, performEvaluation)
         self.chromosomesInIndividual = config["chromosomesInIndividual"]
         self.chromosomes = chromosomes if chromosomes else list([] for _ in range(config["chromosomesInIndividual"]))
-        if initChromosome:
+        if initChromosomes:
             self.initializeChromosome(config.chromosomesInIndividual, config.genesInChromosome, config.geneMinVal,
                                       config.geneMaxVal)
 
@@ -168,6 +168,7 @@ class IndividualB(Individual):
             evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
 
         self.attractivityCoefficient, self.diseaseResistanceCoefficient = evaluationFunction(self)
+        self.evaluationScore = self.attractivityCoefficient
 
     # @staticmethod
     # def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:

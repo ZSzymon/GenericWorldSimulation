@@ -1,4 +1,4 @@
-from Individual import IndividualA
+from Individual import IndividualA, IndividualB
 from crossBreeding import CrossBreeding
 from evaluationFunction import IndividualEvaluateFunctions
 from population import PopulationA, PopulationB
@@ -22,7 +22,7 @@ class WorldA:
         maxGeneration: int = config["maxGeneration"]
         currentGeneration: int = 0
 
-        while currentGeneration < maxGeneration:
+        while currentGeneration < 20:
             selectedIndividuals: [IndividualA] = selectionObject.perform()
             crossingFunctionObject.population.individuals = selectedIndividuals
             newIndividuals = crossingFunctionObject.perform()
@@ -37,19 +37,20 @@ class WorldB:
 
     def __init__(self):
         config = Settings.configB
-        population = PopulationB(config)
+        population = PopulationB()
         population.initializeIndividuals()
         evaluationFunctionName = config.evaluationFunction
         evaluationFunction = IndividualEvaluateFunctions.getByName(evaluationFunctionName)
         population.performPopulationEvaluation(evaluationFunction)
-        #selectionObject: SelectionFunctionClass = \
-        #    SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-        #crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population)
-        #maxGeneration: int = config["maxGeneration"]
-        #currentGeneration: int = 0
-    #
-        #while currentGeneration < maxGeneration:
-        #    selectedIndividuals: [IndividualA] = selectionObject.perform()
+        selectionObject: SelectionFunctionClass = \
+            SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
+        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population,
+                                                                                                        IndividualB)
+        maxGeneration: int = config["maxGeneration"]
+        currentGeneration: int = 0
+
+        while currentGeneration < maxGeneration:
+            selectedIndividuals: [IndividualA] = selectionObject.perform()
         #    crossingFunctionObject.population.individuals = selectedIndividuals
         #    newIndividuals = crossingFunctionObject.perform()
         #    population.individuals = newIndividuals
@@ -65,5 +66,4 @@ class WorldB:
 if __name__ == '__main__':
     world = WorldA()
 
-    #worldB = WorldB()
-
+    worldB = WorldB()

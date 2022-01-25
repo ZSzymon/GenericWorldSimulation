@@ -3,7 +3,7 @@ from settings import Settings
 from typing import List
 
 from Individual import IndividualA
-from population import PopulationA
+from population import PopulationA, PopulationB
 
 
 class SelectionFunctionClass:
@@ -23,6 +23,56 @@ class SelectionFunctionClass:
 class RouletteWheelSelectionClass(SelectionFunctionClass):
 
     def __init__(self, population: PopulationA, individualEvaluationFunction):
+        self.population = population
+        self.individualEvaluationFunction = individualEvaluationFunction
+
+    def perform(self) -> List[IndividualA]:
+
+        def findIndividual(_randScoreVal, _rangesValues):
+            """Util function to find individual witch given randScoreVal is in his range."""
+            for _range_val, _individual in _rangesValues.items():
+                if _randScoreVal in _range_val:
+                    return _individual
+            return None
+
+        individuals = self.population.individuals
+        sumOfAllEvaluationScore = 0
+        for individual in individuals:
+            individual.performEvaluation(self.individualEvaluationFunction)
+
+            sumOfAllEvaluationScore += individual.evaluationScore
+
+        previousRangeBegin = 0
+        maxRangeEnd = 0
+        rangesValues = {}
+        for individual in individuals:
+            # It looks awful. I know. IndividualA score behaves according to normal distribution.
+            # That's why they scores are similar.
+            # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost always given 0.
+            # that's why making it 1000 bigger before casting will give different numbers.
+            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * 1000
+            individual.relativeEvaluationScore = int(ratio)
+
+            rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore + 1)
+            rangesValues[rangeValue] = individual
+            previousRangeBegin += individual.relativeEvaluationScore
+            maxRangeEnd = previousRangeBegin
+
+        selectedIndividuals = []
+
+        for i in range(len(individuals)):
+            # Sub one to randScore raindint in order to find boundary example.
+            # Range in python: range(0,100) == x in <0, 100)
+            randScore = random.randint(0, maxRangeEnd - 1)
+            individual = findIndividual(randScore, rangesValues)
+            selectedIndividuals.append(individual)
+
+        return selectedIndividuals
+
+
+class RouletteWheelSelectionClassB(SelectionFunctionClass):
+
+    def __init__(self, population: PopulationB, individualEvaluationFunction):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
 

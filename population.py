@@ -3,7 +3,7 @@ import random
 from evaluationFunction import IndividualEvaluateFunctions
 from settings import Settings
 from typing import List
-from Individual import IndividualA, Individual
+from Individual import IndividualA, Individual, IndividualB
 
 
 class Population:
@@ -57,7 +57,7 @@ class PopulationA(Population):
 
 class PopulationB(Population):
 
-    def __init__(self, IndividualClass: Individual, config=Settings.configB):
+    def __init__(self, IndividualClass=IndividualB, config=Settings.configB):
         super().__init__(config, IndividualClass)
 
     def getBestIndividual(self):
