@@ -1,5 +1,5 @@
 from Individual import IndividualA
-from crossBreeding import CrossBreedingA
+from crossBreeding import CrossBreeding
 from evaluationFunction import IndividualEvaluateFunctions
 from population import PopulationA, PopulationB
 from selection import SelectionFunctionClass
@@ -18,7 +18,7 @@ class WorldA:
         population.performPopulationEvaluation(evaluationFunction)
         selectionObject: SelectionFunctionClass = \
             SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-        crossingFunctionObject: CrossBreedingA = CrossBreedingA.getByName(config["crossingFunctionName"])(population)
+        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population, IndividualA)
         maxGeneration: int = config["maxGeneration"]
         currentGeneration: int = 0
 
@@ -44,7 +44,7 @@ class WorldB:
         population.performPopulationEvaluation(evaluationFunction)
         #selectionObject: SelectionFunctionClass = \
         #    SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-        #crossingFunctionObject: CrossBreedingA = CrossBreedingA.getByName(config["crossingFunctionName"])(population)
+        #crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population)
         #maxGeneration: int = config["maxGeneration"]
         #currentGeneration: int = 0
     #
@@ -65,5 +65,5 @@ class WorldB:
 if __name__ == '__main__':
     world = WorldA()
 
-    worldB = WorldB()
+    #worldB = WorldB()
 

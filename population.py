@@ -18,7 +18,7 @@ class Population:
     def initializeIndividuals(self):
         individuals = []
         for i in range(self.config.populationSize):
-            individual = self.IndividualClass(self.IndividualClass, initChromosome=True, performEvaluation=True)
+            individual = self.IndividualClass(initChromosome=True, performEvaluation=True)
             individuals.append(individual)
         self.individuals = individuals
 

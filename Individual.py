@@ -67,9 +67,9 @@ class IndividualA(Individual):
     genesMinVal: int
     genesMaxVal: int
 
-    def __init__(self, IndividualClass, initChromosome=True, performEvaluation=True, chromosome: Optional[list] = None):
+    def __init__(self, initChromosome=True, performEvaluation=True, chromosome: Optional[list] = None):
 
-        super().__init__(IndividualClass, initChromosome, performEvaluation, chromosome)
+        super().__init__(type(self), initChromosome, performEvaluation, chromosome)
         self.chromosome = chromosome if chromosome else []
         if initChromosome:
             self.initializeChromosome(self.config.genesInChromosome, self.config.geneMinVal, self.config.geneMaxVal)
@@ -119,9 +119,9 @@ class IndividualB(Individual):
     attractivityCoefficient: float
     diseaseResistanceCoefficient: float
 
-    def __init__(self, IndividualClass, config=Settings.configB, initChromosome=True, performEvaluation=True,
+    def __init__(self, config=Settings.configB, initChromosome=True, performEvaluation=True,
                  chromosomes: Optional[Tuple[list, list]] = None):
-        super().__init__(IndividualClass, initChromosome, performEvaluation)
+        super().__init__(type(self), initChromosome, performEvaluation)
         self.chromosomesInIndividual = config["chromosomesInIndividual"]
         self.chromosomes = chromosomes if chromosomes else list([] for _ in range(config["chromosomesInIndividual"]))
         if initChromosome:
