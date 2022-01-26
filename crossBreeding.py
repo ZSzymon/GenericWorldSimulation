@@ -18,11 +18,13 @@ class CrossBreeding:
         self.__IndividualClass = IndividualClass
 
     @staticmethod
-    def getByName(name):
-        _registered_crossbreeding_functions = {"onePoint".lower(): OnePointCrossingA,
-                                               "twoPoint".lower(): TwoPointCrossingA}
+    def getByName(name, mode):
+        _registered_crossbreeding_functions = {("onePoint".lower(), "mode_a"): OnePointCrossingA,
+                                               ("twoPoint".lower(), "mode_a"): TwoPointCrossingA,
+                                               ("onePoint".lower(), "mode_b"): OnePointCrossingB,
+                                               ("twoPoint".lower(), "mode_b"): TwoPointCrossingB}
 
-        return _registered_crossbreeding_functions.get(name.lower())
+        return _registered_crossbreeding_functions.get((name.lower(), mode))
 
     def perform(self) -> List[Individual]:
         individuals = self.population.individuals
@@ -31,6 +33,7 @@ class CrossBreeding:
         for i in range(0, populationLength - 1, 2):
             mother, father = self.getMotherAndFather(individuals, i)
             firstIndividual, secondIndividual = self.crossParents(mother, father)
+            assert (len(firstIndividual.chromosomes[0]) == 150)
             newGeneration.append(firstIndividual)
             newGeneration.append(secondIndividual)
         return newGeneration
@@ -52,10 +55,13 @@ class OnePointCrossing(CrossBreeding):
 
     @classmethod
     def crossParents(cls, mother, father) -> Tuple[Individual, Individual]:
-        crossingPoint = random.randint(0, mother.genesInChromosome // 2)
+        crossPoints = []
+        for i in range(mother.chromosomesInIndividual):
+            crossingPointBegin = random.randint(0, int(mother.genesInChromosome) - 2)
+            crossPoints.append(crossingPointBegin)
 
-        firstChromosome = cls.createChromosome(mother, father, crossingPoint)
-        secondChromosome = cls.createChromosome(father, mother, crossingPoint)
+        firstChromosome = cls.createChromosome(mother, father, crossPoints)
+        secondChromosome = cls.createChromosome(father, mother, crossPoints)
         firstIndividual = type(mother)(initChromosomes=False, chromosomes=firstChromosome)
         secondIndividual = type(mother)(initChromosomes=False, chromosomes=secondChromosome)
 
@@ -71,6 +77,7 @@ class OnePointCrossingA(OnePointCrossing):
     def createChromosome(cls, first: IndividualA, second: IndividualA, _crossingPoint) -> List[int]:
         return first.chromosomes[:_crossingPoint] + second.chromosomes[_crossingPoint:]
 
+
 class OnePointCrossingB(OnePointCrossing):
 
     def __init__(self, population: PopulationB, IndividualClass):
@@ -79,9 +86,10 @@ class OnePointCrossingB(OnePointCrossing):
     @classmethod
     def createChromosome(cls, first: IndividualB, second: IndividualB, _crossingPoints: List[int]) -> List[List[int]]:
         chromosomes = []
-        for i, crossPoint in _crossingPoints:
-            chromosome = first.chromosomes[i][:crossPoint] + second.chromosomes[i][:crossPoint]
+        for i, crossPoint in enumerate(_crossingPoints):
+            chromosome = first.chromosomes[i][:crossPoint] + second.chromosomes[i][crossPoint:]
             chromosomes.append(chromosome)
+            assert (len(chromosome) == len(first.chromosomes[i]))
         return chromosomes
 
 
@@ -91,12 +99,15 @@ class TwoPointCrossing(CrossBreeding):
         super().__init__(population, IndividualClass)
 
     @classmethod
-    def crossParents(cls, mother, father) -> Tuple[Individual, Individual]:
-        crossingPointBegin = random.randint(0, mother.genesInChromosome // 2)
-        crossingPointEnd = random.randint(crossingPointBegin, int(len(mother.chromosomes)) - 2)
+    def crossParents(cls, mother: Individual, father: Individual) -> Tuple[Individual, Individual]:
+        crossPoints = []
+        for i in range(mother.chromosomesInIndividual):
+            crossingPointBegin = random.randint(0, mother.genesInChromosome // 2)
+            crossingPointEnd = random.randint(crossingPointBegin, int(mother.genesInChromosome) - 2)
+            crossPoints.append((crossingPointBegin, crossingPointEnd))
 
-        firstChromosome = cls.createChromosome(mother, father, crossingPointBegin, crossingPointEnd)
-        secondChromosome = cls.createChromosome(father, mother, crossingPointBegin, crossingPointEnd)
+        firstChromosome = cls.createChromosome(mother, father, crossPoints)
+        secondChromosome = cls.createChromosome(father, mother, crossPoints)
         firstIndividual = type(mother)(initChromosomes=False, chromosomes=firstChromosome)
         secondIndividual = type(mother)(initChromosomes=False, chromosomes=secondChromosome)
 
@@ -109,14 +120,14 @@ class TwoPointCrossingA(TwoPointCrossing):
         super().__init__(population, IndividualClass)
 
     @staticmethod
-    def createChromosome(first: IndividualA, seconds: IndividualA,
+    def createChromosome(first: Individual, seconds: Individual,
                          crossingPointBegin, crossingPointEnd) -> List[int]:
         return first.chromosomes[:crossingPointBegin] + \
                seconds.chromosomes[crossingPointBegin:crossingPointEnd] + \
                first.chromosomes[crossingPointEnd:]
 
 
-class TwoPointCrossingB(CrossBreeding):
+class TwoPointCrossingB(TwoPointCrossing):
 
     def __init__(self, population: PopulationB, IndividualClass):
         super().__init__(population, IndividualClass)
@@ -126,8 +137,9 @@ class TwoPointCrossingB(CrossBreeding):
             -> List[List[int]]:
         chromosomes = []
         for i, crossPoint in enumerate(_crossingPoints):
-            chromosome = first.chromosomes[i][:crossPoint[0]] + \
-                         seconds.chromosomes[i][crossPoint[0]:crossPoint[1]] + \
-                         first.chromosomes[i][crossPoint[1]:]
+            begin, end = crossPoint
+            chromosome = first.chromosomes[i][:begin] + \
+                         seconds.chromosomes[i][begin:end] + \
+                         first.chromosomes[i][end:]
             chromosomes.append(chromosome)
         return chromosomes

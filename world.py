@@ -18,11 +18,12 @@ class WorldA:
         population.performPopulationEvaluation(evaluationFunction)
         selectionObject: SelectionFunctionClass = \
             SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population, IndividualA)
+        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"], "mode_a")(
+            population, IndividualA)
         maxGeneration: int = config["maxGeneration"]
         currentGeneration: int = 0
 
-        while currentGeneration < 20:
+        while currentGeneration < 1:
             selectedIndividuals: [IndividualA] = selectionObject.perform()
             crossingFunctionObject.population.individuals = selectedIndividuals
             newIndividuals = crossingFunctionObject.perform()
@@ -44,26 +45,25 @@ class WorldB:
         population.performPopulationEvaluation(evaluationFunction)
         selectionObject: SelectionFunctionClass = \
             SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"])(population,
-                                                                                                        IndividualB)
+        crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"], "mode_b")(
+            population,
+            IndividualB)
         maxGeneration: int = config["maxGeneration"]
         currentGeneration: int = 0
 
-        while currentGeneration < maxGeneration:
+        while currentGeneration < 20000:
             selectedIndividuals: [IndividualA] = selectionObject.perform()
-        #    crossingFunctionObject.population.individuals = selectedIndividuals
-        #    newIndividuals = crossingFunctionObject.perform()
-        #    population.individuals = newIndividuals
-        #    population.performMutation()
-        #    population.performPopulationEvaluation(IndividualEvaluateFunctions.evenBestOddWorst)
-        #    currentGeneration += 1
-        #    if currentGeneration % 10:
-    #
-        #        if currentGeneration % 10:
-        #        print(f"Best: {population.getBestIndividual().evaluationScore}")
+            crossingFunctionObject.population.individuals = selectedIndividuals
+            newIndividuals = crossingFunctionObject.perform()
+            population.individuals = newIndividuals
+            population.performMutation()
+            population.performPopulationEvaluation(IndividualEvaluateFunctions.coefficientEvaluationFunction)
+            currentGeneration += 1
+            if currentGeneration % 100:
+                print(f"Best: {population.getBestIndividual().evaluationScore}")
 
 
 if __name__ == '__main__':
-    world = WorldA()
+    # world = WorldA()
 
     worldB = WorldB()

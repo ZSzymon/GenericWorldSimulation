@@ -8,26 +8,27 @@ from typing import List, Optional, Tuple
 class Individual:
 
     def __init__(self, IndividualClass, initChromosome=True, performEvaluation=True,
-                 chromosome: Optional[list] = None):
+                 chromosomes: Optional[list] = None):
         self.IndividualClass = IndividualClass
-        Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosome)
+        Individual.checkChoosenConditions(initChromosome, performEvaluation, chromosomes)
         self.config = IndividualClass.config
         self.genesInChromosome = IndividualClass.config["genesInChromosome"]
         self.mutationChance = IndividualClass.config["mutationChance"]
         self.genesMinVal = IndividualClass.config["geneMinVal"]
         self.genesMaxVal = IndividualClass.config["geneMaxVal"]
+        self.chromosomesInIndividual = IndividualClass.config["chromosomesInIndividual"]
 
     @staticmethod
-    def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
+    def checkChoosenConditions(initChromosome, performEvaluation, chromosomes):
         """A method for checking that the given conditions are not mutually exclusive
 
         :param initChromosome: Boolean representing is Chromosome is initialized on init.
         :param performEvaluation: Boolean representing is evaluation is performed in init.
-        :param chromosome: List representing the chromosomes
+        :param chromosomes: List representing the chromosomes
         :return: None or raising Exception.
         """
 
-        if chromosome is None and not initChromosome and performEvaluation:
+        if chromosomes is None and not initChromosome and performEvaluation:
             raise WrongInitializeConditions("You have to provide chromosomes or accept to init chromosomes")
 
     def performEvaluation(self, evaluationFunction=None):
@@ -46,8 +47,8 @@ class Individual:
         :param mutationFunction:
         :return:
         """
-        newChromosome = self.IndividualClass.mutationFunction(self.chromosomes, self.genesMinVal, self.genesMaxVal)
-        self.chromosomes = newChromosome
+        newChromosomes = self.mutationFunction(self.chromosomes, self.genesMinVal, self.genesMaxVal)
+        self.chromosomes = newChromosomes
 
     @staticmethod
     def willMutate(chance):
@@ -115,14 +116,13 @@ class IndividualB(Individual):
     mutationChance: float
     genesMinVal: int
     genesMaxVal: int
-    chromosomesInIndividual: int
     attractivityCoefficient: float
     diseaseResistanceCoefficient: float
 
     def __init__(self, config=Settings.configB, initChromosomes=True, performEvaluation=True,
                  chromosomes: Optional[Tuple[list, list]] = None):
-        super().__init__(type(self), initChromosomes, performEvaluation)
-        self.chromosomesInIndividual = config["chromosomesInIndividual"]
+        super().__init__(type(self), initChromosomes, performEvaluation, chromosomes)
+
         self.chromosomes = chromosomes if chromosomes else list([] for _ in range(config["chromosomesInIndividual"]))
         if initChromosomes:
             self.initializeChromosome(config.chromosomesInIndividual, config.genesInChromosome, config.geneMinVal,
@@ -134,16 +134,16 @@ class IndividualB(Individual):
             self.performEvaluation()
 
     @staticmethod
-    def checkChoosenConditions(initChromosome, performEvaluation, chromosome):
+    def checkChoosenConditions(initChromosome, performEvaluation, chromosomes):
         """A method for checking that the given conditions are not mutually exclusive
 
         :param initChromosome: Boolean representing is Chromosome is initialized on init.
         :param performEvaluation: Boolean representing is evaluation is performed in init.
-        :param chromosome: List representing the chromosomes
+        :param chromosomes: List representing the chromosomes
         :return: None or raising Exception.
         """
 
-        if chromosome is None and not initChromosome and performEvaluation:
+        if chromosomes is None and not initChromosome and performEvaluation:
             raise WrongInitializeConditions("You have to provide chromosomes or accept to init chromosomes")
 
     def initializeChromosome(self, chromosomesInIndividual, genesInChromosome: int, geneMinVal: int, geneMaxVal: int):
@@ -179,8 +179,8 @@ class IndividualB(Individual):
     #     :param geneMaxVal:
     #     :return: Chromosome with mutation
     #     """
-    #     for chromosome in chromosomes:
-    #         randIndex = random.randint(0, len(chromosome) - 1)
+    #     for chromosomes in chromosomes:
+    #         randIndex = random.randint(0, len(chromosomes) - 1)
     #         randValue = random.randint(geneMinVal, geneMaxVal)
-    #         chromosome[randIndex] = randValue
+    #         chromosomes[randIndex] = randValue
     #     return chromosomes

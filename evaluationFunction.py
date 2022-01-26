@@ -1,4 +1,3 @@
-
 class IndividualEvaluateFunctions:
 
     @staticmethod
@@ -24,19 +23,19 @@ class IndividualEvaluateFunctions:
 
     @staticmethod
     def _evaluateAttractiveness(attractivenessChromosome, geneMaxVal):
-        maxAttractivenessScore = geneMaxVal*(151-90) + geneMaxVal*(56-10)/2
-        attractivenessScore = sum(geneVal for geneVal in attractivenessChromosome[10:56])+\
+        maxAttractivenessScore = (geneMaxVal * (151 - 90) / 2) + geneMaxVal * (56 - 10)
+        attractivenessScore = sum(geneVal for geneVal in attractivenessChromosome[10:56]) + \
                               sum(geneVal / 2 for geneVal in attractivenessChromosome[90:151])
         attractivenessCoefficient = attractivenessScore / maxAttractivenessScore
         return attractivenessCoefficient
 
     @staticmethod
     def _evaluateDiseaseResistance(diseaseResistanceChromosome, geneMaxVal):
-        #"Odporność na chorobę zapisana jest na drugim chromosomie na pozycjach
-        #[45-87] oraz [101-131]" Dodane 1 do 131 oraz 87 gdyż podane zakresy są domknięte.
-        maxDiseaseResistance = geneMaxVal*(132-101+88-45)
+        # "Odporność na chorobę zapisana jest na drugim chromosomie na pozycjach
+        # [45-87] oraz [101-131]" Dodane 1 do 131 oraz 87 gdyż podane zakresy są domknięte.
+        maxDiseaseResistance = geneMaxVal * (132 - 101 + 88 - 45)
         diseaseResistanceScore = sum(geneVal for geneVal in diseaseResistanceChromosome[45:88]) \
-                              + sum(geneVal for geneVal in diseaseResistanceChromosome[101:132])
+                                 + sum(geneVal for geneVal in diseaseResistanceChromosome[101:132])
         diseaseResistanceCoefficient = diseaseResistanceScore / maxDiseaseResistance
         return diseaseResistanceCoefficient
 
