@@ -2,7 +2,7 @@ import random
 
 from evaluationFunction import IndividualEvaluateFunctions
 from settings import Settings
-from typing import List
+from typing import List, Set
 from Individual import IndividualA, Individual, IndividualB
 
 
@@ -25,6 +25,15 @@ class Population:
     def addIndividual(self, individual):
         self.individuals.append(individual)
 
+    def performElemination(self):
+        toEleminate: Set[Individual] = set()
+        for individual in self.individuals:
+            if individual.willBeEleminated():
+                toEleminate.add(individual)
+        oldPopulation = set(self.individuals)
+        print(f"Eleminated: {len(toEleminate)} individuals.")
+        self.individuals = list(oldPopulation - toEleminate)
+
     def performMutation(self):
         for individual in self.individuals:
             if Individual.willMutate(1):
@@ -32,6 +41,7 @@ class Population:
 
     def performPopulationEvaluation(self, evaluationFunction=None):
         pass
+
 
 class PopulationA(Population):
 
@@ -60,16 +70,28 @@ class PopulationB(Population):
     def __init__(self, IndividualClass=IndividualB, config=Settings.configB):
         super().__init__(config, IndividualClass)
 
-    def getBestIndividual(self):
+    def getBestIndividual(self) -> Individual:
         self.individuals = sorted(self.individuals, key=lambda individual: individual.evaluationScore, reverse=True)
         return self.individuals[0]
 
     def performPopulationEvaluation(self, evaluationFunction=None):
         if evaluationFunction is None:
             evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
-
+        attractivityCoefficient, diseaseResistanceCoefficient = 0, 0
         for individual in self.individuals:
             individual.performEvaluation(evaluationFunction)
             attractivityCoefficient = individual.attractivityCoefficient
             diseaseResistanceCoefficient = individual.diseaseResistanceCoefficient
+
         self.populationScores.append((attractivityCoefficient, diseaseResistanceCoefficient))
+
+    def printInfo(self):
+        bestIndividual = self.getBestIndividual()
+        populationLen = len(self.individuals)
+        """    attractivityCoefficient: float
+    diseaseResistanceCoefficient: float
+"""
+
+        info = f"Population size: {populationLen}\nBest: attractive -->{bestIndividual.attractivityCoefficient} : " \
+               f"{bestIndividual.diseaseResistanceCoefficient}<-- diseaseResistance "
+        return info

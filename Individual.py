@@ -166,9 +166,33 @@ class IndividualB(Individual):
         """
         if evaluationFunction is None:
             evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
-
+        attractivityWeight = 1
+        diseaseReistanceWeight = 1
         self.attractivityCoefficient, self.diseaseResistanceCoefficient = evaluationFunction(self)
-        self.evaluationScore = self.attractivityCoefficient
+        self.evaluationScore = (self.attractivityCoefficient * attractivityWeight +
+                                self.diseaseResistanceCoefficient * diseaseReistanceWeight) / \
+                               attractivityWeight + diseaseReistanceWeight
+
+    def willBeEleminated(self):
+        """Funkcja eliminacji działa z
+    prawdopodobieństwem 5% dla osobników mających 50% odporności, 10% dla osobników mających
+    40% odporności, oraz 15% w przypadku niższej odporności. Funkcja ta działa po każdym
+    wygenerowanym nowym pokoleniu."""
+
+        def _chance(chanceInPercent):
+            return random.randint(0, 100) < chanceInPercent
+
+        diseaseResistance = self.diseaseResistanceCoefficient * 100
+        if diseaseResistance >= 60:
+            return _chance(0)
+        elif 60 > diseaseResistance >= 50:
+            return _chance(5)
+        elif 50 > diseaseResistance >= 40:
+            return _chance(10)
+        elif 40 > diseaseResistance:
+            return _chance(15)
+
+        assert (False, "It should not came here.")
 
     # @staticmethod
     # def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:

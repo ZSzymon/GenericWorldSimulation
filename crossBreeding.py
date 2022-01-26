@@ -11,8 +11,7 @@ from population import PopulationA, PopulationB, Population
 class CrossBreeding:
 
     def __init__(self, population: Population, IndividualClass):
-        self.population = population
-        self.selectedIndividuals: List[IndividualClass] = []
+        # self.selectedIndividuals: List[IndividualClass] = []
         self.oldPopulationLength = len(population.individuals)
         self.__currentClass__ = CrossBreeding
         self.__IndividualClass = IndividualClass
@@ -26,14 +25,14 @@ class CrossBreeding:
 
         return _registered_crossbreeding_functions.get((name.lower(), mode))
 
-    def perform(self) -> List[Individual]:
-        individuals = self.population.individuals
+    def perform(self, selectedIndividuals, oldPopulationSize) -> List[Individual]:
+        individuals = selectedIndividuals
         newGeneration: List[Individual] = []
-        populationLength = self.oldPopulationLength
-        for i in range(0, populationLength - 1, 2):
+
+        for i in range(0, oldPopulationSize - 1, 2):
             mother, father = self.getMotherAndFather(individuals, i)
             firstIndividual, secondIndividual = self.crossParents(mother, father)
-            assert (len(firstIndividual.chromosomes[0]) == 150)
+            # assert (len(firstIndividual.chromosomes[0]) == 150)
             newGeneration.append(firstIndividual)
             newGeneration.append(secondIndividual)
         return newGeneration

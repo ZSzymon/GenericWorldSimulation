@@ -2,8 +2,8 @@ import random
 from settings import Settings
 from typing import List
 
-from Individual import IndividualA
-from population import PopulationA, PopulationB
+from Individual import IndividualA, Individual
+from population import PopulationA, PopulationB, Population
 
 
 class SelectionFunctionClass:
@@ -22,6 +22,7 @@ class SelectionFunctionClass:
 
 class RouletteWheelSelectionClass(SelectionFunctionClass):
 
+    # TODO: MAKE FINDING INDIVIDUAL O(nlogn) instead of O(n)
     def __init__(self, population: PopulationA, individualEvaluationFunction):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
@@ -49,57 +50,8 @@ class RouletteWheelSelectionClass(SelectionFunctionClass):
             # It looks awful. I know. IndividualA score behaves according to normal distribution.
             # That's why they scores are similar.
             # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost always given 0.
-            # that's why making it 1000 bigger before casting will give different numbers.
-            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * 1000
-            individual.relativeEvaluationScore = int(ratio)
-
-            rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore + 1)
-            rangesValues[rangeValue] = individual
-            previousRangeBegin += individual.relativeEvaluationScore
-            maxRangeEnd = previousRangeBegin
-
-        selectedIndividuals = []
-
-        for i in range(len(individuals)):
-            # Sub one to randScore raindint in order to find boundary example.
-            # Range in python: range(0,100) == x in <0, 100)
-            randScore = random.randint(0, maxRangeEnd - 1)
-            individual = findIndividual(randScore, rangesValues)
-            selectedIndividuals.append(individual)
-
-        return selectedIndividuals
-
-
-class RouletteWheelSelectionClassB(SelectionFunctionClass):
-
-    def __init__(self, population: PopulationB, individualEvaluationFunction):
-        self.population = population
-        self.individualEvaluationFunction = individualEvaluationFunction
-
-    def perform(self) -> List[IndividualA]:
-
-        def findIndividual(_randScoreVal, _rangesValues):
-            """Util function to find individual witch given randScoreVal is in his range."""
-            for _range_val, _individual in _rangesValues.items():
-                if _randScoreVal in _range_val:
-                    return _individual
-            return None
-
-        individuals = self.population.individuals
-        sumOfAllEvaluationScore = 0
-        for individual in individuals:
-            individual.performEvaluation(self.individualEvaluationFunction)
-            sumOfAllEvaluationScore += individual.evaluationScore
-
-        previousRangeBegin = 0
-        maxRangeEnd = 0
-        rangesValues = {}
-        for individual in individuals:
-            # It looks awful. I know. IndividualA score behaves according to normal distribution.
-            # That's why they scores are similar.
-            # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost always given 0.
-            # that's why making it 1000 bigger before casting will give different numbers.
-            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * 1000
+            # that's why making it relevelant to len(individuals) bigger before casting will give different numbers.
+            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * len(individuals) * 10
             individual.relativeEvaluationScore = int(ratio)
 
             rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore + 1)
@@ -121,12 +73,12 @@ class RouletteWheelSelectionClassB(SelectionFunctionClass):
 
 class RankingSelectionClass(SelectionFunctionClass):
 
-    def __init__(self, population: PopulationA, individualEvaluationFunction=None):
+    def __init__(self, population: Population, individualEvaluationFunction=None):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.percentageWinnersOfRankingSelection = Settings.config.percentageWinnersOfRankingSelection
+        self.percentageWinnersOfRankingSelection = population.config.percentageWinnersOfRankingSelection
 
-    def perform(self) -> List[IndividualA]:
+    def perform(self) -> List[Individual]:
         self.population.performPopulationEvaluation(self.individualEvaluationFunction)
         individuals = self.population.individuals
         individuals = sorted(individuals, key=lambda individual: individual.evaluationScore, reverse=True)
@@ -136,14 +88,14 @@ class RankingSelectionClass(SelectionFunctionClass):
 
 
 class TournamentSelectionClass(SelectionFunctionClass):
-    def __init__(self, population: PopulationA, individualEvaluationFunction):
+    def __init__(self, population: Population, individualEvaluationFunction):
         self.population = population
         self.individualEvaluationFunction = individualEvaluationFunction
-        self.tournamentSize = Settings.config["tournamentSize"]
+        self.tournamentSize = population.config["tournamentSize"]
 
     def performOneTournament(self):
         individuals = self.population.individuals
-        tournament: List[List[IndividualA]] = []
+        tournament: List[List[Individual]] = []
         for i in range(self.tournamentSize):
             row = []
             for j in range(self.tournamentSize):
@@ -152,14 +104,14 @@ class TournamentSelectionClass(SelectionFunctionClass):
                 row.append(randomIndividual)
             tournament.append(row)
 
-        def getBestIndividual(individualsList: List[IndividualA]) -> IndividualA:
+        def getBestIndividual(individualsList: List[Individual]) -> Individual:
             bestIndividual = individualsList[0]
             for _individual in individualsList:
                 if _individual.evaluationScore > bestIndividual.evaluationScore:
                     bestIndividual = _individual
             return bestIndividual
 
-        bestIndividuals: List[IndividualA] = []
+        bestIndividuals: List[Individual] = []
         for row in tournament:
             maxValueIndividual = getBestIndividual(row)
             bestIndividuals.append(maxValueIndividual)
@@ -167,8 +119,8 @@ class TournamentSelectionClass(SelectionFunctionClass):
         winner = getBestIndividual(bestIndividuals)
         return winner
 
-    def perform(self) -> List[IndividualA]:
-        selectionIndividuals: List[IndividualA] = []
+    def perform(self) -> List[Individual]:
+        selectionIndividuals: List[Individual] = []
         populationSize = len(self.population.individuals)
 
         while len(selectionIndividuals) < populationSize:

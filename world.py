@@ -33,8 +33,8 @@ class WorldA:
             currentGeneration += 1
             print(f"Best: {population.getBestIndividual().evaluationScore}")
 
-class WorldB:
 
+class WorldB:
 
     def __init__(self):
         config = Settings.configB
@@ -51,16 +51,25 @@ class WorldB:
         maxGeneration: int = config["maxGeneration"]
         currentGeneration: int = 0
 
-        while currentGeneration < 20000:
-            selectedIndividuals: [IndividualA] = selectionObject.perform()
-            crossingFunctionObject.population.individuals = selectedIndividuals
-            newIndividuals = crossingFunctionObject.perform()
+        while currentGeneration < maxGeneration:
+            if len(population.individuals) <= 1:
+                print("Population To small. ")
+                break
+            populationSize = len(population.individuals)
+            selectedIndividuals: [IndividualB] = selectionObject.perform()
+            if len(selectedIndividuals) <= 1:
+                print("To less of selected Individuals.")
+                break
+            # crossingFunctionObject.population = population
+            newIndividuals = crossingFunctionObject.perform(selectedIndividuals, populationSize)
             population.individuals = newIndividuals
             population.performMutation()
             population.performPopulationEvaluation(IndividualEvaluateFunctions.coefficientEvaluationFunction)
+            population.performElemination()
             currentGeneration += 1
-            if currentGeneration % 100:
-                print(f"Best: {population.getBestIndividual().evaluationScore}")
+
+            if currentGeneration:
+                print(f"Gen: {currentGeneration} " + population.printInfo())
 
 
 if __name__ == '__main__':
