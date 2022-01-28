@@ -166,8 +166,8 @@ class IndividualB(Individual):
         """
         if evaluationFunction is None:
             evaluationFunction = IndividualEvaluateFunctions.getByName(self.config.evaluationFunction)
-        attractivityWeight = 1
-        diseaseReistanceWeight = 1
+        attractivityWeight = self.config.attractivityWeight
+        diseaseReistanceWeight = self.config.diseaseReistanceWeight
         self.attractivityCoefficient, self.diseaseResistanceCoefficient = evaluationFunction(self)
         self.evaluationScore = (self.attractivityCoefficient * attractivityWeight +
                                 self.diseaseResistanceCoefficient * diseaseReistanceWeight) / \

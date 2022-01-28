@@ -35,7 +35,7 @@ class WorldA:
 
 
 class WorldB:
-
+    data = []
     def __init__(self):
         config = Settings.configB
         population = PopulationB()
@@ -53,14 +53,13 @@ class WorldB:
 
         while currentGeneration < maxGeneration:
             if len(population.individuals) <= 1:
-                print("Population To small. ")
+                print("Population to small. ")
                 break
             populationSize = len(population.individuals)
             selectedIndividuals: [IndividualB] = selectionObject.perform()
             if len(selectedIndividuals) <= 1:
                 print("To less of selected Individuals.")
                 break
-            # crossingFunctionObject.population = population
             newIndividuals = crossingFunctionObject.perform(selectedIndividuals, populationSize)
             population.individuals = newIndividuals
             population.performMutation()
@@ -68,8 +67,16 @@ class WorldB:
             population.performElemination()
             currentGeneration += 1
 
-            if currentGeneration:
+            if currentGeneration % 10:
                 print(f"Gen: {currentGeneration} " + population.printInfo())
+
+            bestIndividual = population.getBestIndividual()
+            attractivityCoefficient, diseaseResistanceCoefficient = bestIndividual.attractivityCoefficient,\
+                                                                    bestIndividual.diseaseResistanceCoefficient
+
+            if population.isHerdImmunity():
+                print(f"Population is herd immunity in: {currentGeneration}.")
+                break
 
 
 if __name__ == '__main__':

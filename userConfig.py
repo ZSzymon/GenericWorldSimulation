@@ -16,6 +16,8 @@ class Config:
     percentageWinnersOfRankingSelection: int
     evaluationFunction: str
     chromosomesInIndividual:int
+    diseaseReistanceWeight: float = 0
+    attractivityWeight: float = 0
 
     @staticmethod
     def configFromFile(configPath, configType: str = "defaultConfig"):

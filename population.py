@@ -31,7 +31,6 @@ class Population:
             if individual.willBeEleminated():
                 toEleminate.add(individual)
         oldPopulation = set(self.individuals)
-        print(f"Eleminated: {len(toEleminate)} individuals.")
         self.individuals = list(oldPopulation - toEleminate)
 
     def performMutation(self):
@@ -85,6 +84,8 @@ class PopulationB(Population):
 
         self.populationScores.append((attractivityCoefficient, diseaseResistanceCoefficient))
 
+    def isHerdImmunity(self):
+        return all(individual.attractivityCoefficient > .6 for individual in self.individuals)
     def printInfo(self):
         bestIndividual = self.getBestIndividual()
         populationLen = len(self.individuals)
@@ -94,4 +95,8 @@ class PopulationB(Population):
 
         info = f"Population size: {populationLen}\nBest: attractive -->{bestIndividual.attractivityCoefficient} : " \
                f"{bestIndividual.diseaseResistanceCoefficient}<-- diseaseResistance "
-        return info
+
+        if self.isHerdImmunity():
+            info += f"Population begin: {self.config.populationSize}\n"
+            info += f"Got herd immunity with: {len(self.individuals)*100//self.config.populationSize}% of population"
+        return info+"\n"

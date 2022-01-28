@@ -11,21 +11,25 @@
     "tournamentSize": 3,
     "percentageWinnersOfRankingSelection": 50,
     "evaluationFunction": "evenBestOddWorst",
-    "chromosomesInIndividual": 2
+    "chromosomesInIndividual": 2,
+    "attractivityWeight": 1,
+    "diseaseReistanceWeight": 1
   },
   "defaultConfig": {
-    "populationSize": 100,
-    "selectionFunction": "ranking",
-    "crossingFunctionName": "onePoint",
+    "populationSize": 1000,
+    "selectionFunction": "rouletteWheel",
+    "crossingFunctionName": "twoPoint",
     "geneMinVal": 10,
     "geneMaxVal": 99,
     "genesInChromosome": 150,
-    "maxGeneration": 200,
+    "maxGeneration": 2000,
     "mutationChance": 1,
-    "tournamentSize": 3,
+    "tournamentSize": 5,
     "percentageWinnersOfRankingSelection": 50,
     "evaluationFunction": "coefficientEvaluationFunction",
-    "chromosomesInIndividual": 2
+    "chromosomesInIndividual": 2,
+    "attractivityWeight": 1,
+    "diseaseReistanceWeight": 1
   },
   "selectionFunction": ["rouletteWheel", "ranking", "tournament"],
   "crossBendingFunction": ["onePoint", "twoPoint"]
