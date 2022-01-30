@@ -1,19 +1,26 @@
 {
+  "selectionFunction": [
+    "rouletteWheel",
+    "ranking",
+    "tournament"
+  ],
+  "crossBendingFunction": [
+    "onePoint",
+    "twoPoint"
+  ],
   "defaultConfig": {
     "populationSize": 100,
-    "selectionFunction": "rouletteWheel",
-    "crossingFunctionName": "onePoint",
+    "selectionFunction": "tournament",
+    "crossingFunctionName": "twoPoint",
     "geneMinVal": 10,
     "geneMaxVal": 99,
     "genesInChromosome": 50,
     "maxGeneration": 100,
     "mutationChance": 1,
     "tournamentSize": 3,
-    "percentageWinnersOfRankingSelection": 50,
+    "percentageWinnersOfRankingSelection": 75,
     "evaluationFunction": "evenBestOddWorst",
     "chromosomesInIndividual": 1
-  },
-  "selectionFunction": ["rouletteWheel", "ranking", "tournament"],
-  "crossBendingFunction": ["onePoint", "twoPoint"]
+  }
 
 }

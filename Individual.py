@@ -194,17 +194,3 @@ class IndividualB(Individual):
 
         assert (False, "It should not came here.")
 
-    # @staticmethod
-    # def mutationFunction(chromosomes, geneMinVal, geneMaxVal) -> List:
-    #     """ Method performing mutation on chromosomes
-    #
-    #     :param chromosomes:
-    #     :param geneMinVal:
-    #     :param geneMaxVal:
-    #     :return: Chromosome with mutation
-    #     """
-    #     for chromosomes in chromosomes:
-    #         randIndex = random.randint(0, len(chromosomes) - 1)
-    #         randValue = random.randint(geneMinVal, geneMaxVal)
-    #         chromosomes[randIndex] = randValue
-    #     return chromosomes

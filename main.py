@@ -1,16 +1,30 @@
-# This is a sample Python script.
+from statistics import mean, StatisticsError
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+from world import WorldB, WorldA
 
 
-# Press the green button in the gutter to run the script.
+def mode_a():
+    """Konfiguracja całego trybu odbywa się poprzez plik  config/configB.json"""
+    world = WorldA()
+
+
+def mode_b():
+    """Konfiguracja całego trybu odbywa się poprzez plik  config/configB.json"""
+    worldB = WorldB()
+    data = []
+    for i in range(10):
+        row = worldB.run()
+        data.append(row)
+    print("End of simulation")
+    print("Average population cost: " + str(mean([i[0] for i in data if i[2] == 1])))
+
+    print("Average last Generation if population gain herd immunity: " + str(mean([i[1] for i in data if i[2] == 1])))
+    try:
+        print("Average last Generation if population extinguish: " + str(mean([i[1] for i in data if i[2] == 0])))
+    except StatisticsError as e:
+        pass
+
+
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    mode_a()
+    mode_b()

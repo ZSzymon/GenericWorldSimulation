@@ -74,69 +74,17 @@ class WorldB:
             self.population.performElemination()
 
             if self.population.isHerdImmunity():
-                # print(f"Population is herd immunity in: {currentGeneration}.")
-                # print(self.population.printInfo())
                 isAlive = True
                 break
             currentGeneration += 1
         return self.population.getStatistic(), currentGeneration, 1 if isAlive else 0
-    # def __init__(self):
-    #    config = Settings.configB
-    #    population = PopulationB()
-    #    population.initializeIndividuals()
-    #    evaluationFunctionName = config.evaluationFunction
-    #    evaluationFunction = IndividualEvaluateFunctions.getByName(evaluationFunctionName)
-    #    population.performPopulationEvaluation(evaluationFunction)
-    #    selectionObject: SelectionFunctionClass = \
-    #        SelectionFunctionClass.getByName(config["selectionFunction"])(population, evaluationFunction)
-    #    crossingFunctionObject: CrossBreeding = CrossBreeding.getByName(config["crossingFunctionName"], "mode_b")(
-    #        population,
-    #        IndividualB)
-    #    maxGeneration: int = config["maxGeneration"]
-    #    currentGeneration: int = 0
 
-
-#
-#    while currentGeneration < maxGeneration:
-#        if len(population.individuals) <= 1:
-#            print("Population to small. ")
-#            break
-#        populationSize = len(population.individuals)
-#        selectedIndividuals: [IndividualB] = selectionObject.perform()
-#        if len(selectedIndividuals) <= 1:
-#            print("To less of selected Individuals.")
-#            break
-#        newIndividuals = crossingFunctionObject.perform(selectedIndividuals, populationSize)
-#        population.individuals = newIndividuals
-#        population.performMutation()
-#        population.performPopulationEvaluation(IndividualEvaluateFunctions.coefficientEvaluationFunction)
-#        population.performElemination()
-#
-#
-#        if population.isHerdImmunity():
-#            print(f"Population is herd immunity in: {currentGeneration}.")
-#            print(population.printInfo())
-#            break
-#        currentGeneration += 1
 
 from statistics import mean, StatisticsError
 
 if __name__ == '__main__':
     # world = WorldA()
 
-    worldB = WorldB()
-    print("Population Cost, currentGeneration, isAlive")
-    data = []
-    for i in range(10):
-        row = worldB.run()
-        data.append(row)
-        # print(f"{row[0]},{row[1]},{row[2]}")
 
-    print("Pop cost:" + str(mean([i[0] for i in data if i[2] == 1])))
-    print("currentGeneration If alive " + str(mean([i[1] for i in data if i[2] == 1])))
-    try:
-        print("currentGeneration if dead " + str(mean([i[1] for i in data if i[2] == 0])))
-    except StatisticsError as e:
-        pass
 
-    print("isAlive:" + str(mean([i[2] for i in data])))
+    print("Population survived in : " + str(mean([i[2] for i in data]) * 100) + "%")
