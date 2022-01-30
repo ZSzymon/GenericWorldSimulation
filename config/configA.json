@@ -1,18 +1,4 @@
 {
-  "testConfig":  {
-    "populationSize": 10,
-    "selectionFunction": "rouletteWheel",
-    "crossingFunctionName": "onePoint",
-    "geneMinVal": 10,
-    "geneMaxVal": 99,
-    "genesInChromosome": 50,
-    "maxGeneration": 1000,
-    "mutationChance": 1,
-    "tournamentSize": 3,
-    "percentageWinnersOfRankingSelection": 50,
-    "evaluationFunction": "evenBestOddWorst",
-    "chromosomesInIndividual": 1
-  },
   "defaultConfig": {
     "populationSize": 100,
     "selectionFunction": "rouletteWheel",

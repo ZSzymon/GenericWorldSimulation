@@ -21,6 +21,10 @@ class Population:
             individual = self.IndividualClass(initChromosomes=True, performEvaluation=True)
             individuals.append(individual)
         self.individuals = individuals
+        self.backUp = self.individuals[:]
+
+    def reinitIndividuals(self):
+        self.individuals = self.backUp[:]
 
     def addIndividual(self, individual):
         self.individuals.append(individual)
@@ -85,7 +89,7 @@ class PopulationB(Population):
         self.populationScores.append((attractivityCoefficient, diseaseResistanceCoefficient))
 
     def isHerdImmunity(self):
-        return all(individual.attractivityCoefficient > .6 for individual in self.individuals)
+        return all(individual.diseaseResistanceCoefficient > .6 for individual in self.individuals)
     def printInfo(self):
         bestIndividual = self.getBestIndividual()
         populationLen = len(self.individuals)
@@ -97,6 +101,11 @@ class PopulationB(Population):
                f"{bestIndividual.diseaseResistanceCoefficient}<-- diseaseResistance "
 
         if self.isHerdImmunity():
-            info += f"Population begin: {self.config.populationSize}\n"
-            info += f"Got herd immunity with: {len(self.individuals)*100//self.config.populationSize}% of population"
-        return info+"\n"
+            info += f"\nPopulation cost: {(self.config.populationSize - len(self.individuals)) * 100 / self.config.populationSize}\n"
+            info += f"Got herd immunity with: {len(self.individuals) * 100 / self.config.populationSize}% of population"
+        return info + "\n"
+
+    def getStatistic(self):
+        populationCost = (self.config.populationSize - len(self.individuals)) * 100 / self.config.populationSize
+
+        return populationCost

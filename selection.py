@@ -1,5 +1,4 @@
 import random
-from settings import Settings
 from typing import List
 
 from Individual import IndividualA, Individual
@@ -51,7 +50,7 @@ class RouletteWheelSelectionClass(SelectionFunctionClass):
             # That's why they scores are similar.
             # Using int(individual.evaluationScore / sumOfAllEvaluationScore) almost always given 0.
             # that's why making it relevelant to len(individuals) bigger before casting will give different numbers.
-            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * len(individuals) * 10
+            ratio = (float(individual.evaluationScore) / float(sumOfAllEvaluationScore)) * len(individuals) * 100
             individual.relativeEvaluationScore = int(ratio)
 
             rangeValue = range(previousRangeBegin, previousRangeBegin + individual.relativeEvaluationScore + 1)

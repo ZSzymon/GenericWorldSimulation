@@ -10,14 +10,5 @@ class Settings:
     CONFIG_FILE_PATH_A = os.path.join(CONFIG_DIR, "configA.json")
     CONFIG_FILE_PATH_B = os.path.join(CONFIG_DIR, "configB.json")
 
-    if DEBUG:
-        configA = Config.configFromFile(CONFIG_FILE_PATH_A, "testConfig")
-    else:
-        configA = Config.configFromFile(CONFIG_FILE_PATH_A)
-
-    if DEBUG:
-        configB = Config.configFromFile(CONFIG_FILE_PATH_B, "testConfig")
-    else:
-        configB = Config.configFromFile(CONFIG_FILE_PATH_B)
-
-
+    configA = Config.configFromFile(CONFIG_FILE_PATH_A)
+    configB = Config.configFromFile(CONFIG_FILE_PATH_B)

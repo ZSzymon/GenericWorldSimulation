@@ -74,7 +74,8 @@ class OnePointCrossingA(OnePointCrossing):
 
     @classmethod
     def createChromosome(cls, first: IndividualA, second: IndividualA, _crossingPoint) -> List[int]:
-        return first.chromosomes[:_crossingPoint] + second.chromosomes[_crossingPoint:]
+        stop = 1
+        return first.chromosomes[:_crossingPoint[0]] + second.chromosomes[_crossingPoint[0]:]
 
 
 class OnePointCrossingB(OnePointCrossing):
@@ -120,7 +121,8 @@ class TwoPointCrossingA(TwoPointCrossing):
 
     @staticmethod
     def createChromosome(first: Individual, seconds: Individual,
-                         crossingPointBegin, crossingPointEnd) -> List[int]:
+                         crossPoints) -> List[int]:
+        crossingPointBegin, crossingPointEnd = crossPoints[0]
         return first.chromosomes[:crossingPointBegin] + \
                seconds.chromosomes[crossingPointBegin:crossingPointEnd] + \
                first.chromosomes[crossingPointEnd:]
